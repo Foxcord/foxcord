@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://media.discordapp.net/attachments/774598287712845864/867789487664005140/foxcord-text.png" alt="Foxcord logo" width="80%" height="80%"></img>
     <br>
-    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/foxcord.svg?maxAge=3600" alt="NPM downloads" /></a>
+    <a href="https://www.npmjs.com/package/foxcord"><img src="https://img.shields.io/npm/dt/foxcord.svg?maxAge=3600" alt="NPM downloads" /></a>
 <br>
 <img src="https://forthebadge.com/images/badges/made-with-typescript.svg" alt="Made with Typescript"></img>
 </p>
