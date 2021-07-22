@@ -158,7 +158,7 @@ export class DiscordButton {
   }
 
   /**
-   * Set the disable parameter. *The button style musn't be `URL (5)`*
+   * Set the disable parameter. *The button style must not be `URL (5)`*
    * @param {boolean} state
    * @returns {DiscordButton}
    * @example new DiscordButton().setDisable(false);

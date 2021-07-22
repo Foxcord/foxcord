@@ -65,7 +65,7 @@ interface FooterOptions {
 
 interface VideoOptions {
   /**
-   * Video URL **(no YouTube or Daylimotion link, only `.mp4` link)**
+   * Video URL **(no YouTube or Dailymotion link, only `.mp4` link)**
    */
   url?: string;
 

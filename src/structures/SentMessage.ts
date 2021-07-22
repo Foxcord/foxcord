@@ -96,9 +96,9 @@ export class SentMessage {
   public editedTimestamp!: any;
 
   /**
-   * Message attachements
+   * Message attachments
    */
-  public attachements!: any[] | [];
+  public attachments!: any[] | [];
 
   private _token: string;
 

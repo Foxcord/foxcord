@@ -1,8 +1,5 @@
-import OpusScript = require('opusscript');
-
 import { Badges } from './Badges';
-import { DISCORD_CDN, DISCORD_API, imageFormat, imageSize, GATEWAY_OPCODES } from '../utils/Constants';
-import { Websocket } from '../websocket/Websocket';
+import { DISCORD_CDN, DISCORD_API, imageFormat, imageSize } from '../utils/Constants';
 import { RestManager } from '../rest/RestManager';
 
 type ImageSize = '128' | '256' | '512' | '1024';
