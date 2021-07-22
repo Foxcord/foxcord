@@ -1,0 +1,58 @@
+{
+  "name": "foxcord",
+  "version": "0.0.1-alpha",
+  "description": "A modern and simple way to interact with the Discord API !",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Foxcord/foxcord.git"
+  },
+  "keywords": [
+    "foxcord",
+    "discord",
+    "discordjs",
+    "disord api",
+    "api",
+    "foxcord.js"
+  ],
+  "author": "RemyK",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Foxcord/foxcord/issues"
+  },
+  "homepage": "https://foxcord.xyz/",
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.10",
+    "@types/ws": "^7.4.4",
+    "prettier": "^2.3.0",
+    "ts-node": "^10.0.0",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "form-data": "^3.0.1",
+    "fs": "^0.0.1-security",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1",
+    "opusscript": "^0.0.8",
+    "ws": "^7.4.6"
+  },
+  "directories": {
+    "example": "tests",
+    "test": "tests"
+  },
+  "engines": {
+    "node": ">=v12.x"
+  }
+}
