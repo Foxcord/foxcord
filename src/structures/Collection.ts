@@ -60,6 +60,10 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
     return Array.from(this.keys())[Math.floor(Math.random() * Array.from(this.keys()).length)];
   }
 
+  /**
+   * Get a random value from the collection
+   * @returns {TObject}
+   */
   public random(): TObject {
     if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
     return Array.from(this.values())[Math.floor(Math.random() * Array.from(this.values()).length)];
