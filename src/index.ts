@@ -7,6 +7,7 @@ export * from './client/Client';
 export * from './structures/SlashCommandsManager';
 export * from './structures/SlashCommandBuilder';
 export * from './structures/DiscordSelectMenu';
+export * from './structures/Collection';
 
 export * from './client/ClientUser';
 
@@ -28,5 +29,5 @@ export * from './rest/RestManager';
 
 export * from './websocket/Websocket';
 
-export * from './utils/Constants';
-export * from './utils/Utils';
+export * as Constants from './utils/Constants';
+export * as Utils from './utils/Utils';
