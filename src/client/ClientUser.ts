@@ -1,7 +1,9 @@
+import { EventEmitter } from 'events';
+
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API, DISCORD_CDN, imageFormat, imageSize, CLIENT_EVENTS } from '../utils/Constants';
 import { Badges } from '../structures/Badges';
-import { EventEmitter } from 'events';
+import { _testURL } from '../utils/Utils';
 
 type ImageSize = '128' | '256' | '512' | '1024';
 
@@ -107,6 +109,35 @@ export class ClientUser {
         ? '.' + options.format
         : '.png'
     }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
+  }
+
+  /**
+   * Set the client username
+   * @param {string} username
+   * @returns {Promise<void>}
+   */
+  public async setUsername(username: string): Promise<void> {
+    if (!username || typeof username !== 'string') throw new SyntaxError('NO_USERNAME_PROVIDED_OR_INVALID_USERNAME');
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
+      method: 'PATCH',
+      token: this._token,
+      data: JSON.stringify({ username: username }),
+    });
+  }
+
+  /**
+   * Set the client avatar
+   * @param {string} avatarURL The avatar URL, **no image directory**
+   * @returns {Promise<void>}
+   */
+  public async setAvatar(avatarURL: string): Promise<void> {
+    if (!avatarURL || typeof avatarURL !== 'string') throw new SyntaxError('NO_USERNAME_PROVIDED_OR_INVALID_USERNAME');
+    if (!_testURL(avatarURL)) throw new Error('INVALID_NEW_AVATAR_URL');
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
+      method: 'PATCH',
+      token: this._token,
+      data: JSON.stringify({ avatar: avatarURL }),
+    });
   }
 
   /**

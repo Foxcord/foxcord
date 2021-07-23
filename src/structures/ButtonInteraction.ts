@@ -223,7 +223,7 @@ export class ButtonInteraction {
    * @private
    * @returns {Promise<void>}
    */
-  private _patchData(data: any): void {
+  private async _patchData(data: any): Promise<void> {
     this.message = new Message(data.message, this._token);
     this.member = new Member(data.member, this._token, this.guildID);
     this.deferred = false;

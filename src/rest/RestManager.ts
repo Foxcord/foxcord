@@ -136,8 +136,8 @@ export class RestManager {
    * @returns {void}
    */
   private toObject(array: any): void {
-    var rv = {} as any;
-    for (var i = 0; i < array.length; ++i) if (array[i] !== undefined) rv[i] = array[i];
+    const rv = {} as any;
+    for (let i = 0; i < array.length; ++i) if (array[i] !== undefined) rv[i] = array[i];
     return rv;
   }
 }

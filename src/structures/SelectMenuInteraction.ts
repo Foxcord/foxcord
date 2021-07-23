@@ -228,7 +228,7 @@ export class SelectMenuInteraction {
    * @private
    * @returns {Promise<void>}
    */
-  private _patchData(data: any) {
+  private async _patchData(data: any): Promise<void> {
     this.deferred = false;
     this.replied = false;
     this.guildID = data.guild_id;

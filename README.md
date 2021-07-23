@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://media.discordapp.net/attachments/774598287712845864/867789487664005140/foxcord-text.png" alt="Foxcord logo" width="80%" height="80%"></img>
     <br>
-    <a href="https://www.npmjs.com/package/foxcord"><img src="https://img.shields.io/npm/dt/foxcord.svg?maxAge=3600" alt="NPM downloads" /></a>
+    <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/foxcord.svg?maxAge=3600" alt="NPM downloads" /></a>
 <br>
 <img src="https://forthebadge.com/images/badges/made-with-typescript.svg" alt="Made with Typescript"></img>
 </p>
@@ -32,25 +32,13 @@ $ npm install foxcord@latest
 
 # 💾 Code example
 
-```js
-const { Client } = require('foxcord');
+<p align="center">
 
-const client = new Client({ device: 'MOBILE', intents: ['ALL'] });
+![Bot code image example](https://media.discordapp.net/attachments/835896457454026802/868045935761059860/carbon.png?width=1007&height=676)
 
-client.on('READY', async () => {
-    client.setGame('powered by Foxcord !', { type: 'PLAYING' });
-    console.log(client.user.tag + ' is online!');
-});
+![Webhook code image example](https://media.discordapp.net/attachments/835896457454026802/868046408442331136/webhook.png?width=1015&height=676)
 
-client.on('MESSAGE', (message) => {
-    if (message.content === 'ping') {
-        return message.channel.send('🏓 pong!');
-    }
-});
-
-client.connect('token');
-```
-
+</p>
 
 # 🔗 Links
 

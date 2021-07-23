@@ -117,6 +117,6 @@ export class Message {
     this.embeds = data.embeds;
     this.mentionEveryone = data.mention_everyone;
     this.editedTimestamp = data.edited_timestamp;
-    this.attachements = data.attachements;
+    this.attachments = data.attachments;
   }
 }

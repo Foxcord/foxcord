@@ -54,7 +54,7 @@ export class GuildMember {
    * @private
    * @returns {Promise<void>}
    */
-  private async _patchData(data: object | any) {
+  private async _patchData(data: object | any): Promise<void> {
     this.username = data.user.username;
     this.discriminator = data.user.discriminator;
     this.id = data.user.id;

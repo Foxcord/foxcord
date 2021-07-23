@@ -142,7 +142,7 @@ export class SlashCommandInteraction {
    * @private
    * @returns {Promise<void>}
    */
-  private async _patchData(data: object | any) {
+  private async _patchData(data: object | any): Promise<void> {
     this.id = data.id;
     this.guildID = data.guild_id;
     this.name = data.data.name;

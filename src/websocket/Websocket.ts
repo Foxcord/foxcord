@@ -60,7 +60,11 @@ export class Websocket {
   public async initConnection(token: string, options?: any): Promise<void> {
     this._options = options;
     this._token = token;
-    this.socket = new ws(WEBSOCKET_URL);
+    try {
+      this.socket = new ws(WEBSOCKET_URL);
+    } catch (err) {
+      throw new Error('INVALID_TOKEN_WEBSOCKET_ERROR_' + String(err).toUpperCase());
+    }
     this.socket.once('open', () => {
       this.online = true;
     });

@@ -96,7 +96,7 @@ export class Member {
    * @private
    * @returns {Promise<void>}
    */
-  private async _patchData(data: object | any) {
+  private async _patchData(data: object | any): Promise<void> {
     this.id = data.user.id;
     this.username = data.user.username;
     this.avatar = data.user.avatar;

@@ -209,7 +209,7 @@ export class WebhookMessage {
    * @private
    * @returns {Promise<void>}
    */
-  private _patchData(data: object | any) {
+  private async _patchData(data: object | any): Promise<void> {
     this.id = data.author.id;
     this.type = data.type;
     this.message = {
@@ -224,6 +224,5 @@ export class WebhookMessage {
     this.channelID = data.channel_id;
     this.discriminator = data.author.discriminator;
     this.username = data.author.userusername;
-    return;
   }
 }

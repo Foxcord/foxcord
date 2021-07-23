@@ -72,7 +72,7 @@ export class User {
   }
 
   public async send(message: string | number | DiscordEmbed | any, options?: SendOptions) {
-    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
+    if (!message) throw new SyntaxError('ERRUR ICI');
     const payload = {
       content: '',
       embeds: [] as any,
@@ -99,7 +99,7 @@ export class User {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('INVALID_EMBED');
+          throw new SyntaxError('ERREUR ICI');
         }
         break;
     }
@@ -115,7 +115,7 @@ export class User {
    * @private
    * @returns {Promise<void>}
    */
-  private async _patchData(data: any) {
+  private async _patchData(data: any): Promise<void> {
     this.avatar = data.avatar;
     this.id = data.id;
     this.discriminator = data.discriminator;

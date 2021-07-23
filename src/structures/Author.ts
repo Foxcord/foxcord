@@ -107,7 +107,7 @@ export class Author {
    * @private
    * @returns {Promise<void>}
    */
-  private _patchData(data: object | any) {
+  private async _patchData(data: object | any): Promise<void> {
     this.voiceChannelID = data.channel_id;
     this.guildID = data.guild_id;
     this.username = data.author.username;
