@@ -1,6 +1,6 @@
 {
   "name": "foxcord",
-  "version": "0.0.1-alpha",
+  "version": "0.0.1-alpha-0.1",
   "description": "A modern and simple way to interact with the Discord API !",
   "main": "./src/index.ts",
   "scripts": {
