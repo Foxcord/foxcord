@@ -72,7 +72,7 @@ export class User {
   }
 
   public async send(message: string | number | DiscordEmbed | any, options?: SendOptions) {
-    if (!message) throw new SyntaxError('ERRUR ICI');
+    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
     const payload = {
       content: '',
       embeds: [] as any,
@@ -99,7 +99,7 @@ export class User {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('ERREUR ICI');
+          throw new SyntaxError('INVALID_EMBED');
         }
         break;
     }
