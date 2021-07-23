@@ -4,8 +4,8 @@ const webhookClient = new WebhookClient();
 
 const embed = new DiscordEmbed()
     .setColor('#ba180d')
-    .setThumbnail('https://images6.alphacoders.com/922/thumb-1920-922275.png')
-    .setDescription('ceci est un test');
+    .setThumbnail('some cool image URL')
+    .setDescription('wow this is a description');
 
 let webhookSettings = {
     url: 'some webhook URL',
