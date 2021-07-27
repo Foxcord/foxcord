@@ -132,6 +132,13 @@ export class Channel {
     return new SentMessage(await res, this._token);
   }
 
+  /**
+   * Create a MessageCollector
+   * @param {Function} filter 
+   * @param {Client} client 
+   * @param {CollectorOptions} options 
+   * @returns {MessageCollector}
+   */
   public createMessageCollector(filter: Function, client: Client, options?: CollectorOptions): MessageCollector {
     if (!filter || typeof filter !== 'function') throw new SyntaxError('NO_FILTER_PROVIDED_OR_INVALID_FILTER');
     if (!client || (client instanceof Client) === false) throw new SyntaxError('NO_CLIENT_PROVIDED_OR_INVALID_CLIENT_PROVIDED');

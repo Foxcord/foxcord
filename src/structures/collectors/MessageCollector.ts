@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 
 import { Collection } from '../../utils/Collection';
+import { COLLECTOR_EVENTS } from '../../utils/Constants'
 import { Message } from '../Message';
 import { Client } from '../../client/Client';
 
@@ -25,7 +26,6 @@ export declare interface MessageCollector extends EventEmitter {
     on<TKey extends keyof CollectorEvents>(event: TKey, listener: (...args: CollectorEvents[TKey]) => void | Promise<void> | any): this;
     once<TKey extends keyof CollectorEvents>(event: TKey, listener: (...args: CollectorEvents[TKey]) => void | Promise<void> | any): this;
 }
-
 
 /**
  * Class symbolizing a `MessageCollector`
@@ -68,17 +68,23 @@ export class MessageCollector extends EventEmitter {
         this.collected = new Collection();
         this.awaitMessages();
         setTimeout(() => {
-            this.emit('END', this.collected);
+            this.emit(COLLECTOR_EVENTS.END, this.collected);
             return;
-        }, options?.time && typeof options.time === 'number' ? options.time * 1000 : 30000 || 30000)
+        }, options?.time && typeof options.time === 'number' ? options.time * 1000 : 30000 || 30000);
+        this.on('END', () => { return this.removeAllListeners() });
     };
 
-    private async awaitMessages() {
+    /**
+     * @ignore
+     * @private
+     * @return {Promise<void>}
+     */
+    private async awaitMessages(): Promise<void> {
         this.client.on('MESSAGE', async message => {
             if (message.channel.id !== this.channelID) return;
             if (this.filter(message)) {
                 this.collected.set(message.id, message);
-                this.emit('COLLECTED', message);
+                this.emit(COLLECTOR_EVENTS.COLLECTED, message);
             }
         })
     }

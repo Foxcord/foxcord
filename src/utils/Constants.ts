@@ -239,6 +239,12 @@ export enum CLIENT_EVENTS {
   WARN = 'WARN',
 }
 
+// COLLECTOR EVENTS
+export enum COLLECTOR_EVENTS {
+  END = 'END',
+  COLLECTED = 'COLLECTED'
+}
+
 // WEBSOCKET CLOSE CODES
 export let WEBSOCKET_CLOSE_CODES = {
   '1000': 'Normal Closure',
