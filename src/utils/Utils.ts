@@ -11,11 +11,11 @@ import { updateLog } from '../utils/Logger';
 export function _testURL(url: string): boolean {
   const urlRegex = new RegExp(
     '^(https?:\\/\\/)?' +
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-      '((\\d{1,3}\\.){3}\\d{1,3}))' +
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-      '(\\?[;&a-z\\d%_.~+=-]*)?' +
-      '(\\#[-a-z\\d_]*)?$',
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+    '((\\d{1,3}\\.){3}\\d{1,3}))' +
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+    '(\\?[;&a-z\\d%_.~+=-]*)?' +
+    '(\\#[-a-z\\d_]*)?$',
     'i',
   );
   return !!urlRegex.test(url);
@@ -48,32 +48,6 @@ export function _isEmoji(emoji: string): boolean {
     return true;
   }
   return false;
-}
-
-/**
- * Has xD
- * @param {any} o
- * @param {any} k
- * @returns {any}
- */
-const has = (o: any, k: any): any => Object.prototype.hasOwnProperty.call(o, k);
-
-/**
- * Merge default function (not really useful in this project btw)
- * @param {any} def
- * @param {any} given
- * @returns {Promise<void>}
- */
-export function _mergeDefault(def: any, given: any): Promise<any> {
-  if (!given) return def;
-  for (const key in def) {
-    if (!has(given, key) || given[key] === undefined) {
-      given[key] = def[key];
-    } else if (given[key] === Object(given[key])) {
-      given[key] = _mergeDefault(def[key], given[key]);
-    }
-  }
-  return given;
 }
 
 /**

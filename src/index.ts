@@ -21,8 +21,11 @@ export * from './structures/Message';
 export * from './structures/SelectMenuInteraction';
 export * from './structures/SentMessage';
 export * from './structures/slashCommands/SlashCommand';
+export * from './structures/slashCommands/SlashCommandInteraction';
 export * from './structures/User';
 export * from './structures/webhook/WebhookMessage';
+export * from './structures/MessageReaction';
+export * from './structures/collectors/MessageCollector'
 
 export * from './rest/RestManager';
 

@@ -13,6 +13,7 @@ import { SlashCommandInteraction } from '../structures/slashCommands/SlashComman
 import { SelectMenuInteraction } from '../structures/SelectMenuInteraction';
 import { Messages } from '../structures/Messages';
 import { Guilds } from '../structures/Guilds';
+import { MessageReaction } from '../structures/MessageReaction';
 
 type DeviceType = 'MOBILE' | 'DESKTOP';
 type IntentsOptions =
@@ -107,6 +108,7 @@ interface ClientEvents {
   GUILD_MEMBER_ADD: [member: GuildMember];
   SELECT_MENU_CLICKED: [selectMenu: SelectMenuInteraction];
   RECONNECTING: [statusCode: string];
+  MESSAGE_REACTION_ADD: [reaction: MessageReaction];
 }
 
 export declare interface Client extends EventEmitter {

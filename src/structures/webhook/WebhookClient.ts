@@ -1,6 +1,6 @@
 import { WebhookMessage } from './WebhookMessage';
-import { RestManager } from '../rest/RestManager';
-import { DiscordEmbed } from '../structures/DiscordEmbed';
+import { RestManager } from '../../rest/RestManager';
+import { DiscordEmbed } from '../../structures/DiscordEmbed';
 
 interface WebhookOptions {
   /**

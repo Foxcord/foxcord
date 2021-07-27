@@ -13,6 +13,7 @@ import { EventEmitter } from 'events';
 import { GuildMember } from '../structures/GuildMember';
 import { SlashCommandInteraction } from '../structures/slashCommands/SlashCommandInteraction';
 import { SelectMenuInteraction } from '../structures/SelectMenuInteraction';
+import { MessageReaction } from '../structures/MessageReaction';
 
 const wsProperties = {
   os: process ? process.platform : 'foxcord',
@@ -156,7 +157,7 @@ export class Websocket {
           this.initHeartBeat();
         }, this.heartbeat.interval);
         break;
-      case GATEWAY_OPCODES.DISPATCH:;
+      case GATEWAY_OPCODES.DISPATCH:
         await this.handleEvent(parsedMsg);
         break;
       case GATEWAY_OPCODES.RECONNECT:
@@ -194,6 +195,9 @@ export class Websocket {
         break;
       case GATEWAY_EVENTS.GUILD_MEMBER_ADD:
         this.clientEmitter.emit(CLIENT_EVENTS.GUILD_MEMBER_ADD, new GuildMember(message.d));
+        break;
+      case GATEWAY_EVENTS.MESSAGE_REACTION_ADD:
+        this.clientEmitter.emit(CLIENT_EVENTS.MESSAGE_REACTION_ADD, new MessageReaction(message.d, this._token));
         break;
     }
   }

@@ -3,10 +3,11 @@ import moment from 'moment';
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
 import { Channel } from './Channel';
-import { GuildMember } from './GuildMember';
 import { DiscordEmbed } from './DiscordEmbed';
 import { DiscordButton } from './DiscordButton';
 import { DiscordSelectMenu } from './DiscordSelectMenu';
+import { _isEmoji } from '../utils/Utils';
+import { GuildMember } from '../structures/GuildMember';
 
 interface MessageOptions {
   /**
@@ -180,6 +181,37 @@ export class SentMessage {
       token: this._token,
       method: 'PATCH',
       data: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Pin the sent message
+   * @returns {Promise<void>}
+   */
+  public async pin(): Promise<void> {
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+      token: this._token,
+      method: 'PUT',
+    });
+  }
+
+  /**
+   * Unpin the sent message
+   * @returns {Promise<void>}
+   */
+  public async unpin(): Promise<void> {
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+      token: this._token,
+      method: 'DELETE',
+    });
+  }
+
+  public async addReaction(emoji: string) {
+    if (!emoji || typeof emoji !== 'string') throw new SyntaxError('INVALID_EMOJI_PROVIDED');
+    if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`, {
+      token: this._token,
+      method: 'PUT',
     });
   }
 
