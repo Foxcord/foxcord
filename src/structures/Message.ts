@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import { Channel } from './Channel';
 import { Author } from './Author';
+import { Websocket } from '../websocket/Websocket';
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
 
@@ -86,14 +87,16 @@ export class Message {
   public attachments!: any[] | [];
 
   private _token: string;
+  private WS!: Websocket;
 
   /**
    * Create a new Message
    * @param {Object | any} messageData
    * @constructor
    */
-  constructor(messageData: object | any, token: string) {
+  constructor(messageData: object | any, token: string, WS: any) {
     this._token = token;
+    this.WS = WS;
     this._patchData(messageData);
   }
 
@@ -104,7 +107,7 @@ export class Message {
    */
   private async _patchData(data: object | any): Promise<void> {
     this.channel = new Channel(data.channel_id, this._token, data.guild_id !== undefined ? data.guild_id : null);
-    this.author = new Author(data, this._token);
+    this.author = new Author(data, this._token, this.WS);
     this.content = data.content;
     this.id = data.id;
     this.timestamp = data.timestamp;

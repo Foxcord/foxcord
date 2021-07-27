@@ -3,7 +3,7 @@ import moment from 'moment';
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
 import { Channel } from './Channel';
-import { Author } from './Author';
+import { GuildMember } from './GuildMember';
 import { DiscordEmbed } from './DiscordEmbed';
 import { DiscordButton } from './DiscordButton';
 import { DiscordSelectMenu } from './DiscordSelectMenu';
@@ -38,7 +38,7 @@ export class SentMessage {
   /**
    * The message author
    */
-  public author!: Author;
+  public author!: GuildMember;
 
   /**
    * The message ID
@@ -191,7 +191,7 @@ export class SentMessage {
   private async _patchData(data: object | any): Promise<void> {
     this.channel = new Channel(data.channel_id, data.guild_id, this._token);
     this.content = data.content;
-    this.author = new Author(data, this._token);
+    this.author = new GuildMember(data);
     this.id = data.id;
     this.timestamp = data.timestamp;
     this.formatedTimestamp = Number(moment(data.timestamp).format('LLLL'));

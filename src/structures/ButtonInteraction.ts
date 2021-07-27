@@ -5,6 +5,7 @@ import { Member } from './Member';
 import { DiscordEmbed } from './DiscordEmbed';
 import { DiscordButton } from './DiscordButton';
 import { DiscordSelectMenu } from './DiscordSelectMenu';
+import { Websocket } from '../websocket/Websocket';
 
 interface SendOptions {
   /**
@@ -66,6 +67,7 @@ export class ButtonInteraction {
   private _token: string;
   private deferred!: boolean;
   private replied!: boolean;
+  private WS!: Websocket;
 
   /**
    * Create a new ButtonInteraction
@@ -73,8 +75,9 @@ export class ButtonInteraction {
    * @param {string} token
    * @constructor
    */
-  constructor(messageData: object | any, token: string) {
+  constructor(messageData: object | any, token: string, WS: any) {
     this._token = token;
+    this.WS = WS;
     this._patchData(messageData);
   }
 
@@ -224,7 +227,7 @@ export class ButtonInteraction {
    * @returns {Promise<void>}
    */
   private async _patchData(data: any): Promise<void> {
-    this.message = new Message(data.message, this._token);
+    this.message = new Message(data.message, this._token, this.WS);
     this.member = new Member(data.member, this._token, this.guildID);
     this.deferred = false;
     this.replied = false;

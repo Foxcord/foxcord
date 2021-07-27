@@ -1,9 +1,12 @@
-import { DiscordEmbed } from '../structures/DiscordEmbed';
+import { DiscordEmbed } from './DiscordEmbed';
 import { DISCORD_API } from '../utils/Constants';
 import { RestManager } from '../rest/RestManager';
 import { DiscordButton } from './DiscordButton';
 import { DiscordSelectMenu } from './DiscordSelectMenu';
 import { Guild } from './Guild';
+import { SentMessage } from './SentMessage';
+import { Client } from '../client/Client';
+import { MessageCollector } from './collectors/MessageCollector';
 
 interface SendOptions {
   /**
@@ -20,6 +23,13 @@ interface SendOptions {
    * Discord select menu **(only 1)**
    */
   selectMenu?: DiscordSelectMenu;
+}
+
+interface CollectorOptions {
+  /**
+   * Collector time **(in seconds)**
+   */
+  time?: number;
 }
 
 /**
@@ -57,7 +67,7 @@ export class Channel {
    * @param {SendOptions} options
    * @returns {Promise<void>}
    */
-  public async send(message: string | number | DiscordEmbed, options?: SendOptions): Promise<void> {
+  public async send(message: string | number | DiscordEmbed, options?: SendOptions): Promise<SentMessage> {
     if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
     const payload = {
       content: '',
@@ -102,7 +112,7 @@ export class Channel {
       ];
     }
     if (options?.files) {
-      return await RestManager.prototype.POSTFILE(
+      const res: any = await RestManager.prototype.POSTFILE(
         `${DISCORD_API}channels/${this.id}/messages`,
         Array.isArray(options.files) ? options.files.map((el) => el) : options.files,
         payload.content,
@@ -113,10 +123,21 @@ export class Channel {
           data: JSON.stringify(payload),
         },
       );
+      return new SentMessage(await res, this._token);
     }
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.id}/messages`, {
+    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.id}/messages`, {
       token: this._token,
       data: JSON.stringify(payload),
+    });
+    return new SentMessage(await res, this._token);
+  }
+
+  public createMessageCollector(filter: Function, client: Client, options?: CollectorOptions): MessageCollector {
+    if (!filter || typeof filter !== 'function') throw new SyntaxError('NO_FILTER_PROVIDED_OR_INVALID_FILTER');
+    if (!client || (client instanceof Client) === false) throw new SyntaxError('NO_CLIENT_PROVIDED_OR_INVALID_CLIENT_PROVIDED');
+    return new MessageCollector(filter, client, {
+      time: options?.time || 30,
+      channelID: this.id
     });
   }
 }

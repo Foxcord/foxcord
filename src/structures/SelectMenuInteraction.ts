@@ -5,6 +5,7 @@ import { Member } from './Member';
 import { DiscordEmbed } from '../structures/DiscordEmbed';
 import { DiscordButton } from '../structures/DiscordButton';
 import { DiscordSelectMenu } from './DiscordSelectMenu';
+import { Websocket } from '../websocket/Websocket';
 
 interface SendOptions {
   /**
@@ -71,6 +72,7 @@ export class SelectMenuInteraction {
   private _token: string;
   private deferred!: boolean;
   private replied!: boolean;
+  private WS!: Websocket;
 
   /**
    * Create a new SelectMenuInteraction
@@ -78,8 +80,9 @@ export class SelectMenuInteraction {
    * @param {string} token
    * @constructor
    */
-  constructor(messageData: object | any, token: string) {
+  constructor(messageData: object | any, token: string, WS: any) {
     this._token = token;
+    this.WS = WS;
     this._patchData(messageData);
   }
 
@@ -238,6 +241,6 @@ export class SelectMenuInteraction {
     this.values = data.data.values;
     this.applicationID = data.application_id;
     this.member = new Member(data.member, this._token, this.guildID);
-    this.message = new Message(data.message, this._token);
+    this.message = new Message(data.message, this._token, this.WS);
   }
 }

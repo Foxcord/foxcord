@@ -9,7 +9,7 @@ import { ButtonInteraction } from '../structures/ButtonInteraction';
 import { ClientUser } from './ClientUser';
 import { GuildMember } from '../structures/GuildMember';
 import { Channels } from '../structures/Channels';
-import { SlashCommandInteraction } from '../structures/SlashCommandInteraction';
+import { SlashCommandInteraction } from '../structures/slashCommands/SlashCommandInteraction';
 import { SelectMenuInteraction } from '../structures/SelectMenuInteraction';
 import { Messages } from '../structures/Messages';
 import { Guilds } from '../structures/Guilds';
@@ -110,8 +110,8 @@ interface ClientEvents {
 }
 
 export declare interface Client extends EventEmitter {
-  on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void | Promise<void>): this;
-  once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void | Promise<void>): this;
+  on<TKey extends keyof ClientEvents>(event: TKey, listener: (...args: ClientEvents[TKey]) => void | Promise<void> | any): this;
+  once<TKey extends keyof ClientEvents>(event: TKey, listener: (...args: ClientEvents[TKey]) => void | Promise<void> | any): this;
 }
 
 /**
@@ -178,6 +178,7 @@ export class Client extends EventEmitter {
    */
   public async connect(token: string): Promise<void> {
     if (!token || typeof token !== 'string') throw new SyntaxError('NO_TOKEN_PROVIDED');
+    if (token.length !== 59) throw new SyntaxError('INVALID_TOKEN_PROVIDED');
     this.user = new ClientUser(token, this);
     this._token = token;
     this.users = new Users(this._token);
@@ -205,9 +206,9 @@ export class Client extends EventEmitter {
           : 0,
       url:
         options?.url &&
-        _testURL(options.url) &&
-        (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
-          /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
+          _testURL(options.url) &&
+          (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
+            /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
           ? options.url
           : undefined,
     };

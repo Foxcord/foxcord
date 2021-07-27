@@ -21,7 +21,7 @@ export class Guilds {
   /**
    * Get a message by ID
    * @param {string|number} id
-   * @returns {Promise<SentMessage>}
+   * @returns {Promise<Guild>}
    */
   public async getByID(id: string | number): Promise<Guild> {
     if (!id) throw new SyntaxError('NO_ID_PROVIDED');

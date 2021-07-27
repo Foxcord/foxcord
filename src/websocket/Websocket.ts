@@ -11,13 +11,13 @@ import { Message } from '../structures/Message';
 import { ButtonInteraction } from '../structures/ButtonInteraction';
 import { EventEmitter } from 'events';
 import { GuildMember } from '../structures/GuildMember';
-import { SlashCommandInteraction } from '../structures/SlashCommandInteraction';
+import { SlashCommandInteraction } from '../structures/slashCommands/SlashCommandInteraction';
 import { SelectMenuInteraction } from '../structures/SelectMenuInteraction';
 
 const wsProperties = {
-  os: 'foxcord',
+  os: process ? process.platform : 'foxcord',
   device: 'foxcord',
-  browser: 'win32',
+  browser: 'foxcord',
   compress: true,
   largeThreshold: 250,
   reconnect: true,
@@ -60,11 +60,7 @@ export class Websocket {
   public async initConnection(token: string, options?: any): Promise<void> {
     this._options = options;
     this._token = token;
-    try {
-      this.socket = new ws(WEBSOCKET_URL);
-    } catch (err) {
-      throw new Error('INVALID_TOKEN_WEBSOCKET_ERROR_' + String(err).toUpperCase());
-    }
+    this.socket = new ws(WEBSOCKET_URL);
     this.socket.once('open', () => {
       this.online = true;
     });
@@ -160,7 +156,7 @@ export class Websocket {
           this.initHeartBeat();
         }, this.heartbeat.interval);
         break;
-      case GATEWAY_OPCODES.DISPATCH:
+      case GATEWAY_OPCODES.DISPATCH:;
         await this.handleEvent(parsedMsg);
         break;
       case GATEWAY_OPCODES.RECONNECT:
@@ -172,7 +168,7 @@ export class Websocket {
   private async handleEvent(message: any) {
     switch (message.t) {
       case GATEWAY_EVENTS.MESSAGE_CREATE:
-        this.clientEmitter.emit(CLIENT_EVENTS.MESSAGE, new Message(message.d, this._token));
+        this.clientEmitter.emit(CLIENT_EVENTS.MESSAGE, new Message(message.d, this._token, this));
         break;
       case GATEWAY_EVENTS.INTERACTION_CREATE:
         switch (Number(message.d.type)) {
@@ -185,12 +181,12 @@ export class Websocket {
           case 3:
             switch (Number(message.d.data.component_type)) {
               case 2:
-                this.clientEmitter.emit(CLIENT_EVENTS.BUTTON_CLICKED, new ButtonInteraction(message.d, this._token));
+                this.clientEmitter.emit(CLIENT_EVENTS.BUTTON_CLICKED, new ButtonInteraction(message.d, this._token, this));
                 break;
               case 3:
                 this.clientEmitter.emit(
                   CLIENT_EVENTS.SELECT_MENU_CLICKED,
-                  new SelectMenuInteraction(message.d, this._token),
+                  new SelectMenuInteraction(message.d, this._token, this),
                 );
                 break;
             }
