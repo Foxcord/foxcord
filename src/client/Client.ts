@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
 import { Websocket } from '../websocket/Websocket';
-import { INTENTS_ARRAY, GATEWAY_OPCODES, gameType, numberGameType, statusType, CLIENT_EVENTS } from '../utils/Constants';
+import { INTENTS_ARRAY, GATEWAY_OPCODES, gameType, numberGameType, statusType } from '../utils/Constants';
 import { Users } from '../structures/Users';
 import { _testURL, _checkForUpdates } from '../utils/Utils';
 import { Message } from '../structures/Message';
@@ -103,61 +103,61 @@ export declare interface Client extends EventEmitter {
    * Emitted when the client receives a message
    * @event Client#MESSAGE
    */
-  on(event: CLIENT_EVENTS.MESSAGE, listener: (message: Message) => void | Promise<void>): this;
+  on(event: 'MESSAGE', listener: (message: Message) => void | Promise<void>): this;
 
   /**
    * Emitted when a slash command is used
    * @event Client#SLASH_COMMAND_USED
    */
-  on(event: CLIENT_EVENTS.SLASH_COMMAND_USED, listener: (interaction: SlashCommandInteraction) => void | Promise<void>): this;
+  on(event: 'SLASH_COMMAND_USED', listener: (interaction: SlashCommandInteraction) => void | Promise<void>): this;
 
   /**
    * Emitted when a button is clicked
    * @event Client#BUTTON_CLICKED
    */
-  on(event: CLIENT_EVENTS.BUTTON_CLICKED, listener: (button: ButtonInteraction) => void | Promise<void>): this;
+  on(event: 'BUTTON_CLICKED', listener: (button: ButtonInteraction) => void | Promise<void>): this;
 
   /**
    * Emitted when the client is ready
    * @event Client#READY
    */
-  on(event: CLIENT_EVENTS.READY, listener: () => void): this;
+  on(event: 'READY', listener: () => void): this;
 
   /**
    * Emitted when an error occures
    * @event Client#ERROR
    */
-  on(event: CLIENT_EVENTS.ERROR, listener: (error: Error) => void): this;
+  on(event: 'ERROR', listener: (error: Error) => void): this;
 
   /**
    * Emitted when a warn occured
    * @event Client#WARN
    */
-  on(event: CLIENT_EVENTS.WARN, listener: (warn: string) => void): this;
+  on(event: 'WARN', listener: (warn: string) => void): this;
 
   /**
    * Emitted when a member joins a guild
    * @event Client#GUILD_MEMBER_ADD
    */
-  on(event: CLIENT_EVENTS.GUILD_MEMBER_ADD, listener: (member: GuildMember) => void | Promise<void>): this;
+  on(event: 'GUILD_MEMBER_ADD', listener: (member: GuildMember) => void | Promise<void>): this;
 
   /**
    * Emitted when a select menu is clicked
    * @event Client#SELECT_MENU_CLICKED
    */
-  on(event: CLIENT_EVENTS.SELECT_MENU_CLICKED, listener: (selectMenu: SelectMenuInteraction) => void | Promise<void>): this;
+  on(event: 'SELECT_MENU_CLICKED', listener: (selectMenu: SelectMenuInteraction) => void | Promise<void>): this;
 
   /**
    * Emitted when the client is trying to reconnect itself
    * @event Client#RECONNECTING
    */
-  on(event: CLIENT_EVENTS.RECONNECTING, listener: (statusCode: string) => void): this;
+  on(event: 'RECONNECTING', listener: (statusCode: string) => void): this;
 
   /**
    * Emitted when a reaction is added to a message
    * @event Client#MESSAGE_REACTION_ADD
    */
-  on(event: CLIENT_EVENTS.MESSAGE_REACTION_ADD, listener: (reaction: MessageReaction) => void | Promise<void>): this;
+  on(event: 'MESSAGE_REACTION_ADD', listener: (reaction: MessageReaction) => void | Promise<void>): this;
 }
 
 /**
@@ -252,9 +252,9 @@ export class Client extends EventEmitter {
           : 0,
       url:
         options?.url &&
-          _testURL(options.url) &&
-          (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
-            /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
+        _testURL(options.url) &&
+        (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
+          /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
           ? options.url
           : undefined,
     };
