@@ -98,22 +98,66 @@ interface ClientOptions {
   intents?: IntentsOptions[];
 }
 
-interface ClientEvents {
-  MESSAGE: [message: Message];
-  SLASH_COMMAND_USED: [interaction: SlashCommandInteraction];
-  BUTTON_CLICKED: [button: ButtonInteraction];
-  READY: [];
-  ERROR: [error: Error];
-  WARN: [warn: string];
-  GUILD_MEMBER_ADD: [member: GuildMember];
-  SELECT_MENU_CLICKED: [selectMenu: SelectMenuInteraction];
-  RECONNECTING: [statusCode: string];
-  MESSAGE_REACTION_ADD: [reaction: MessageReaction];
-}
-
 export declare interface Client extends EventEmitter {
-  on<TKey extends keyof ClientEvents>(event: TKey, listener: (...args: ClientEvents[TKey]) => void | Promise<void> | any): this;
-  once<TKey extends keyof ClientEvents>(event: TKey, listener: (...args: ClientEvents[TKey]) => void | Promise<void> | any): this;
+  /**
+   * Emitted when the client receives a message
+   * @event Client#MESSAGE
+   */
+  on(event: 'MESSAGE', listener: (message: Message) => void | Promise<void>): this;
+
+  /**
+   * Emitted when a slash command is used
+   * @event Client#SLASH_COMMAND_USED
+   */
+  on(event: 'SLASH_COMMAND_USED', listener: (interaction: SlashCommandInteraction) => void | Promise<void>): this;
+
+  /**
+   * Emitted when a button is clicked
+   * @event Client#BUTTON_CLICKED
+   */
+  on(event: 'BUTTON_CLICKED', listener: (button: ButtonInteraction) => void | Promise<void>): this;
+
+  /**
+   * Emitted when the client is ready
+   * @event Client#READY
+   */
+  on(event: 'READY', listener: () => void): this;
+
+  /**
+   * Emitted when an error occures
+   * @event Client#ERROR
+   */
+  on(event: 'ERROR', listener: (error: Error) => void): this;
+
+  /**
+   * Emitted when a warn occured
+   * @event Client#WARN
+   */
+  on(event: 'WARN', listener: (warn: string) => void): this;
+
+  /**
+   * Emitted when a member joins a guild
+   * @event Client#GUILD_MEMBER_ADD
+   */
+  on(event: 'GUILD_MEMBER_ADD', listener: (member: GuildMember) => void | Promise<void>): this;
+
+  /**
+   * Emitted when a select menu is clicked
+   * @event Client#SELECT_MENU_CLICKED
+   */
+  on(event: 'SELECT_MENU_CLICKED', listener: (selectMenu: SelectMenuInteraction) => void | Promise<void>): this;
+
+  /**
+   * Emitted when the client is trying to reconnect itself
+   * @event Client#RECONNECTING
+   */
+  on(event: 'RECONNECTING', listener: (statusCode: string) => void): this;
+
+  /**
+   * Emitted when a reaction is added to a message
+   * @event Client#MESSAGE_REACTION_ADD
+   */
+  on(event: 'MESSAGE_REACTION_ADD', listener: (reaction: MessageReaction) => void | Promise<void>): this;
 }
 
 /**
@@ -208,9 +252,9 @@ export class Client extends EventEmitter {
           : 0,
       url:
         options?.url &&
-          _testURL(options.url) &&
-          (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
-            /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
+        _testURL(options.url) &&
+        (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
+          /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
           ? options.url
           : undefined,
     };
