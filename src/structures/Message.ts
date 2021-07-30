@@ -5,6 +5,7 @@ import { Author } from './Author';
 import { Websocket } from '../websocket/Websocket';
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
+import { SentMessage } from './SentMessage';
 
 /**
  * Class symbolizing a `Message`
@@ -99,6 +100,43 @@ export class Message {
     this.WS = WS;
     this._patchData(messageData);
   }
+
+  /**
+   * Inline reply to the message *(author mention)*
+   * @param {string} content 
+   * @returns {Promise<SentMessage>}
+   */
+  public async inlineReply(content: string): Promise<SentMessage> {
+    if (!content || typeof content !== 'string') throw new SyntaxError('NO_CONTENT_PROVIDED_OR_INVALID_CONTENT');
+    const payload = {
+      content: content,
+      message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },
+    };
+    const res: any = RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
+      token: this._token,
+      data: JSON.stringify(payload)
+    });
+    return new SentMessage(await res, this._token);
+  };
+
+  /**
+   * Inline reply to the message without mention the author
+   * @param {string} content 
+   * @returns {Promise<SentMessage>}
+   */
+  public async inlineReplyNoMention(content: string): Promise<SentMessage> {
+    if (!content || typeof content !== 'string') throw new SyntaxError('NO_CONTENT_PROVIDED_OR_INVALID_CONTENT');
+    const payload = {
+      content: content,
+      message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },
+      allowed_mentions: { replied_user: false }
+    };
+    const res: any = RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
+      token: this._token,
+      data: JSON.stringify(payload)
+    });
+    return new SentMessage(await res, this._token);
+  };
 
   /**
    * @ignore
