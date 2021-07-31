@@ -120,15 +120,17 @@ export class Author {
    * Join the message author voice channel
    * @param {VoiceOptions} state
    */
-  public async joinVoiceChannel(state?: VoiceOptions): Promise<VoiceConnection> {
+  public async joinVoiceChannel(channelID: string, state?: VoiceOptions): Promise<VoiceConnection> {
+    if (!channelID || typeof channelID !== 'string')
+      throw new SyntaxError('NO_CHANNEL_ID_PROVIDED_OR_INVALID_CHANNEL_ID');
     await this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
       guild_id: this.guildID,
-      channel_id: '859480519610990603',
+      channel_id: channelID,
       self_mute: state?.mute || false,
       self_deaf: state?.deaf || false,
     });
-    //const endpoint = await this.WS.getVoiceConnectionEndpoint(this.guildID);
-    return new VoiceConnection(this.WS, this.guildID, 'endpoint');
+    const endpoint = await this.WS.getVoiceConnectionEndpoint(this.guildID);
+    return new VoiceConnection(this.WS, this.guildID, await endpoint);
   }
 
   public async leaveVoiceChannel() {
