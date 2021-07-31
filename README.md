@@ -56,6 +56,6 @@ $ npm install foxcord@latest
 
 *Note: This package is not affiliated with Discord Inc*
 
-![Discord Banner 1](https://discordapp.com/api/guilds/841226489689014325/widget.png?style=banner1)
+![Discord invite link](https://media.discordapp.net/attachments/774598287712845864/870975617003315230/2021-07-31_12h26_02.png)
 
 **You can join the Foxcord official Discord server using [this link](https://discord.gg/sTahUmwTsr)**
