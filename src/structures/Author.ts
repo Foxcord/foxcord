@@ -1,6 +1,7 @@
 import { Badges } from './Badges';
-import { DISCORD_CDN, DISCORD_API, imageFormat, imageSize, GATEWAY_OPCODES } from '../utils/Constants';
+import { DISCORD_CDN, imageFormat, imageSize, GATEWAY_OPCODES } from '../utils/Constants';
 import { Websocket } from '../websocket/Websocket';
+import { VoiceConnection } from '../voice/VoiceConnection';
 
 type ImageSize = '128' | '256' | '512' | '1024';
 
@@ -75,9 +76,9 @@ export class Author {
   public bot!: boolean;
 
   /**
-   * Message author voice ?
+   * The author roles
    */
-  public voice: boolean;
+  public roles!: string[];
 
   private guildID!: string;
   private _token: string;
@@ -91,7 +92,6 @@ export class Author {
    */
   constructor(messageData: object | any, token: string, WS: Websocket) {
     this._token = token;
-    this.voice = false;
     this.WS = WS;
     this._patchData(messageData);
   }
@@ -109,29 +109,36 @@ export class Author {
   public avatarURL(options?: AvatarURL): string | undefined {
     if (this.avatar === null) return undefined;
     if (!options) return `${DISCORD_CDN}avatars/${this.id}/${this.avatar}.png`;
-    return `${DISCORD_CDN}avatars/${this.id}/${this.avatar}${options.format && typeof options.format === 'string' && imageFormat.indexOf(options.format.toLowerCase()) > -1
-      ? '.' + options.format
-      : '.png'
-      }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
+    return `${DISCORD_CDN}avatars/${this.id}/${this.avatar}${
+      options.format && typeof options.format === 'string' && imageFormat.indexOf(options.format.toLowerCase()) > -1
+        ? '.' + options.format
+        : '.png'
+    }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
   }
 
-  public async joinVoiceChannel(state?: VoiceOptions): Promise<void> {
-    this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
+  /**
+   * Join the message author voice channel
+   * @param {VoiceOptions} state
+   */
+  public async joinVoiceChannel(state?: VoiceOptions): Promise<VoiceConnection> {
+    await this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
       guild_id: this.guildID,
       channel_id: '859480519610990603',
       self_mute: state?.mute || false,
       self_deaf: state?.deaf || false,
     });
-  };
+    //const endpoint = await this.WS.getVoiceConnectionEndpoint(this.guildID);
+    return new VoiceConnection(this.WS, this.guildID, 'endpoint');
+  }
 
   public async leaveVoiceChannel() {
-    return this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
+    this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
       guild_id: this.guildID,
       channel_id: null,
       self_mute: false,
-      self_deaf: false
+      self_deaf: false,
     });
-  };
+  }
 
   /**
    * @ignore
@@ -146,5 +153,5 @@ export class Author {
     this.discriminator = data.author.discriminator;
     this.avatar = data.author.avatar;
     this.badges = new Badges(data.author.public_flags);
-  };
-};
+  }
+}

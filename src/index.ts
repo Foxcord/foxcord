@@ -25,7 +25,7 @@ export * from './structures/slashCommands/SlashCommandInteraction';
 export * from './structures/User';
 export * from './structures/webhook/WebhookMessage';
 export * from './structures/MessageReaction';
-export * from './structures/collectors/MessageCollector'
+export * from './utils/collectors/MessageCollector';
 
 export * from './rest/RestManager';
 

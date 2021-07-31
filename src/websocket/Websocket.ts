@@ -14,6 +14,7 @@ import { GuildMember } from '../structures/GuildMember';
 import { SlashCommandInteraction } from '../structures/slashCommands/SlashCommandInteraction';
 import { SelectMenuInteraction } from '../structures/SelectMenuInteraction';
 import { MessageReaction } from '../structures/MessageReaction';
+import { Collection } from '../utils/Collection';
 
 const wsProperties = {
   os: process ? process.platform : 'foxcord',
@@ -48,6 +49,7 @@ export class Websocket {
   private _token!: string;
   private clientEmitter!: EventEmitter;
   private _options!: any;
+  private voiceReadyEventContent: Collection<string, string> = new Collection();
 
   /**
    * Create a new WebSocket
@@ -96,6 +98,11 @@ export class Websocket {
   public async sendToWS(code: number, data: any) {
     if (!this.socket || this.socket.readyState !== ws.OPEN) return;
     this.socket.send(JSON.stringify({ op: code, d: data }));
+  }
+
+  public async getVoiceConnectionEndpoint(guildID: string): Promise<any> {
+    const guildCollectionContent = this.voiceReadyEventContent.get(guildID);
+    return guildCollectionContent || undefined;
   }
 
   public async getMetaData(code: number, options: any) {
@@ -168,6 +175,10 @@ export class Websocket {
 
   private async handleEvent(message: any) {
     switch (message.t) {
+      case GATEWAY_EVENTS.VOICE_SERVER_UPDATE:
+        console.log(message.d.endpoint);
+        if (message.op === 0) this.voiceReadyEventContent.set(await message.d.guild_id, await message.d.endpoint);
+        break;
       case GATEWAY_EVENTS.MESSAGE_CREATE:
         this.clientEmitter.emit(CLIENT_EVENTS.MESSAGE, new Message(message.d, this._token, this));
         break;
@@ -182,7 +193,10 @@ export class Websocket {
           case 3:
             switch (Number(message.d.data.component_type)) {
               case 2:
-                this.clientEmitter.emit(CLIENT_EVENTS.BUTTON_CLICKED, new ButtonInteraction(message.d, this._token, this));
+                this.clientEmitter.emit(
+                  CLIENT_EVENTS.BUTTON_CLICKED,
+                  new ButtonInteraction(message.d, this._token, this),
+                );
                 break;
               case 3:
                 this.clientEmitter.emit(

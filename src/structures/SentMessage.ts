@@ -209,10 +209,13 @@ export class SentMessage {
   public async addReaction(emoji: string) {
     if (!emoji || typeof emoji !== 'string') throw new SyntaxError('INVALID_EMOJI_PROVIDED');
     if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`, {
-      token: this._token,
-      method: 'PUT',
-    });
+    return await RestManager.prototype.REQUEST(
+      `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`,
+      {
+        token: this._token,
+        method: 'PUT',
+      },
+    );
   }
 
   /**

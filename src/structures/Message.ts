@@ -103,7 +103,7 @@ export class Message {
 
   /**
    * Inline reply to the message *(author mention)*
-   * @param {string} content 
+   * @param {string} content
    * @returns {Promise<SentMessage>}
    */
   public async inlineReply(content: string): Promise<SentMessage> {
@@ -114,14 +114,14 @@ export class Message {
     };
     const res: any = RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
       token: this._token,
-      data: JSON.stringify(payload)
+      data: JSON.stringify(payload),
     });
     return new SentMessage(await res, this._token);
-  };
+  }
 
   /**
    * Inline reply to the message without mention the author
-   * @param {string} content 
+   * @param {string} content
    * @returns {Promise<SentMessage>}
    */
   public async inlineReplyNoMention(content: string): Promise<SentMessage> {
@@ -129,14 +129,14 @@ export class Message {
     const payload = {
       content: content,
       message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },
-      allowed_mentions: { replied_user: false }
+      allowed_mentions: { replied_user: false },
     };
     const res: any = RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
       token: this._token,
-      data: JSON.stringify(payload)
+      data: JSON.stringify(payload),
     });
     return new SentMessage(await res, this._token);
-  };
+  }
 
   /**
    * @ignore

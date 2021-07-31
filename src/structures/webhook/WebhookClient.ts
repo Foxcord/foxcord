@@ -51,7 +51,8 @@ export class WebhookClient {
    * const webhookClient = new WebhookClient();
    */
   constructor(options?: { retryOnLimit: boolean }) {
-    this.retryOnLimit = options?.retryOnLimit && typeof options.retryOnLimit === 'boolean' ? options.retryOnLimit : true;
+    this.retryOnLimit =
+      options?.retryOnLimit && typeof options.retryOnLimit === 'boolean' ? options.retryOnLimit : true;
     this.restManager = new RestManager();
   }
 

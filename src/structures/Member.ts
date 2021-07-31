@@ -72,10 +72,11 @@ export class Member {
   public avatarURL(options?: AvatarURL): string | undefined {
     if (this.avatar === null) return undefined;
     if (!options) return `${DISCORD_CDN}avatars/${this.id}/${this.avatar}.png`;
-    return `${DISCORD_CDN}avatars/${this.id}/${this.avatar}${options.format && typeof options.format === 'string' && imageFormat.indexOf(options.format.toLowerCase()) > -1
-      ? '.' + options.format
-      : '.png'
-      }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
+    return `${DISCORD_CDN}avatars/${this.id}/${this.avatar}${
+      options.format && typeof options.format === 'string' && imageFormat.indexOf(options.format.toLowerCase()) > -1
+        ? '.' + options.format
+        : '.png'
+    }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
   }
 
   public async addRole(roleID: string) {
