@@ -34,9 +34,43 @@ $ npm install foxcord@latest
 
 <p align="center">
 
-![Bot code image example](https://media.discordapp.net/attachments/835896457454026802/868045935761059860/carbon.png?width=1007&height=676)
+```js
+const { Client } = require('foxcord');
 
-![Webhook code image example](https://media.discordapp.net/attachments/835896457454026802/868046408442331136/webhook.png?width=1015&height=676)
+const client = new Client({
+    device: 'MOBILE',
+    intents: ['ALL'],
+    reconnect: true
+});
+
+client.on('READY', () => {
+    client.setGame('powered by Foxcord');
+    console.log(client.user.tag + ' is online!');
+})
+
+client.on('MESSAGE', (message) => {
+    if(message.author.bot) return;
+    if(message.content === 'ping') return message.channel.send('🏓 Pong, my ping is ' + client.ping + 'ms!');
+})
+
+client.connect('token');
+```
+
+```js
+const { WebhookClient } = require('foxcord');
+
+const webhookClient = new WebhookClient();
+
+let webhookSettings = {
+    url: 'some webhook URL',
+    username: 'Captain Webhook',
+    avatarURL: 'some cool image URL'
+}
+
+webhookClient.send('Cool message!', { ...webhookSettings }).then(async webhook => {
+    await webhookClient.send(webhook.avatarURL(), { ...webhookSettings })
+})
+```
 
 </p>
 
@@ -56,6 +90,6 @@ $ npm install foxcord@latest
 
 *Note: This package is not affiliated with Discord Inc*
 
-![Discord invite link](https://media.discordapp.net/attachments/774598287712845864/870975617003315230/2021-07-31_12h26_02.png)
+[![Discord invite link](https://media.discordapp.net/attachments/774598287712845864/870975617003315230/2021-07-31_12h26_02.png)](https://discord.gg/sTahUmwTsr)
 
 **You can join the Foxcord official Discord server using [this link](https://discord.gg/sTahUmwTsr)**
