@@ -23,6 +23,7 @@ const wsProperties = {
   compress: true,
   largeThreshold: 250,
   reconnect: true,
+  shards: 1,
 };
 
 const heartBeatProperties = {
@@ -112,6 +113,7 @@ export class Websocket {
           intents: this.intents,
           token: this._token,
           compress: this.wsProperties.compress,
+          shards: [0, this.wsProperties.shards],
           large_threshold: this.wsProperties.largeThreshold,
           properties: {
             $os: this.wsProperties.os,
