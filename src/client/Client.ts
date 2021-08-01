@@ -74,6 +74,13 @@ interface ClientOptions {
   device?: DeviceType;
 
   /**
+   * Client shards
+   * @default 1
+   * @deprecated
+   */
+  shards?: number
+
+  /**
    * If the client reconnect itself
    * @default false
    */
@@ -252,9 +259,9 @@ export class Client extends EventEmitter {
           : 0,
       url:
         options?.url &&
-        _testURL(options.url) &&
-        (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
-          /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
+          _testURL(options.url) &&
+          (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
+            /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
           ? options.url
           : undefined,
     };
@@ -326,6 +333,9 @@ export class Client extends EventEmitter {
     options?.largeThreshold && typeof options.largeThreshold === 'number'
       ? (this.WS.wsProperties.largeThreshold = options.largeThreshold)
       : 250;
+    options?.shards && typeof options.shards === 'number'
+      ? (this.WS.wsProperties.shards = options.shards)
+      : 1
     if (!options?.intents || options.intents.map((el) => el.toUpperCase()).includes('ALL')) this.WS.intents = 65534;
     else
       this.WS.intents = INTENTS_ARRAY.map((elm) =>

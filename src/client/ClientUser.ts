@@ -141,6 +141,20 @@ export class ClientUser {
   }
 
   /**
+   * Get the bot shards count
+   * @returns {Promise<number>}
+   * @deprecated
+   */
+  public async getShardsCount(): Promise<number> {
+    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}gateway/bot`, {
+      method: 'GET',
+      token: this._token,
+    });
+    const parsedRes = await JSON.parse(res);
+    return parsedRes.shards;
+  };
+
+  /**
    * @ignore
    * @private
    * @returns {Promise<void>}
