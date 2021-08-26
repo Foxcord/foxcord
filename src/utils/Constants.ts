@@ -280,3 +280,12 @@ export enum VOICE_OPCODES {
   RESUMED = 9,
   CLIENT_DISCONNECT = 13,
 }
+
+// WEBSOCKET EVENTS
+export enum WEBSOCKET_EVENTS {
+  MESSAGE = 'message',
+  OPEN = 'open',
+  CLOSE = 'close',
+  ERROR = 'error',
+  PONG = 'pong',
+}

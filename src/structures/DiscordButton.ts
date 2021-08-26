@@ -1,24 +1,6 @@
 import { _isEmoji, _testURL } from '../utils/Utils';
 import { buttonStyles } from '../utils/Constants';
-
-type buttonStyle = 'BLURPLE' | 'GREY' | 'GREEN' | 'RED' | 'URL';
-
-interface EmojiOptions {
-  /**
-   * Emoji name
-   */
-  name?: string;
-
-  /**
-   * Emoji ID *(if custom only)*
-   */
-  id?: string;
-
-  /**
-   * Is the emoji animated?
-   */
-  animated?: boolean;
-}
+import { ButtonStyle, EmojiOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `DiscordButton`
@@ -41,7 +23,7 @@ export class DiscordButton {
    * The button style
    * @default 1
    */
-  public style?: buttonStyle | number;
+  public style?: ButtonStyle | number;
 
   /**
    * The button label
@@ -85,7 +67,7 @@ export class DiscordButton {
    * new DiscordButton().setLabel('Some label');
    */
   setLabel(label: string): DiscordButton {
-    if (!label || label.length > 80) throw new SyntaxError('INVALID_LABEL_OR_NO_LABEL_PROVIDED');
+    if (!label || label.length > 80) throw new SyntaxError('[DISCORD-BUTTON] No label provided');
     this.label = label;
     return this;
   }
@@ -98,7 +80,7 @@ export class DiscordButton {
    * * GREEN (3)
    * * RED (4)
    * * URL (5)
-   * @param {buttonStyle|number} style
+   * @param {ButtonStyle|number} style
    * @returns {DiscordButton}
    * @default 1
    * @example
@@ -106,11 +88,11 @@ export class DiscordButton {
    * // Or using number
    * new DiscordButton().setStyle(3);
    */
-  setStyle(style?: buttonStyle | number): DiscordButton {
+  setStyle(style?: ButtonStyle | number): DiscordButton {
     if (!style) this.style = 1;
     else {
       const btnStyle = buttonStyles.find((elm) => elm.color === style || elm.number === style);
-      if (!btnStyle) throw new SyntaxError('INVALID_STYLE');
+      if (!btnStyle) throw new SyntaxError('[DISCORD-BUTTON] Invalid style');
       this.style = btnStyle.number;
     }
     return this;
@@ -124,7 +106,7 @@ export class DiscordButton {
    * new DiscordButton().setEmoji('👌');
    */
   setEmoji(emoji: string): DiscordButton {
-    if (!emoji || !_isEmoji(emoji)) throw new SyntaxError('NO_EMOJI_PROVIDED_OR_INVALID_EMOJI');
+    if (!emoji || !_isEmoji(emoji)) throw new SyntaxError('[DISCORD-BUTTON] No emoji provided');
     this.emoji = {};
     this.emoji.name = emoji;
     return this;
@@ -138,7 +120,7 @@ export class DiscordButton {
    * new DiscordButton().setID('some_id_using_underscores');
    */
   setID(id: string): DiscordButton {
-    if (!id || id.length > 100) throw new SyntaxError('NO_ID_PROVIDED_OR_INVALID_ID');
+    if (!id || id.length > 100) throw new SyntaxError('[DISCORD-BUTTON] No id provided');
     this.customID = id;
     return this;
   }
@@ -151,8 +133,8 @@ export class DiscordButton {
    * new DiscordButton().setURL('valid URL');
    */
   setURL(url: string): DiscordButton {
-    if (this.style !== 5) throw new SyntaxError('STYLE_MUST_BE_5');
-    if (!url || !_testURL(url)) throw new SyntaxError('NO_URL_PROVIDED_OR_INVALID_URL');
+    if (this.style !== 5) throw new SyntaxError('[DISCORD-BUTTON] Style must be 5');
+    if (!url || !_testURL(url)) throw new SyntaxError('[DISCORD-BUTTON] No url provided');
     this.URL = url;
     return this;
   }
@@ -164,7 +146,7 @@ export class DiscordButton {
    * @example new DiscordButton().setDisable(false);
    */
   setDisable(state?: boolean): DiscordButton {
-    if (this.style === 5) throw new SyntaxError('STYLE_IS_5');
+    if (this.style === 5) throw new SyntaxError('[DISCORD-BUTTON] Style is 5');
     if (!state) {
       this.disable = true;
     } else {
@@ -179,7 +161,7 @@ export class DiscordButton {
    * @example new DiscordButton().getJson()
    */
   getJSON(): object {
-    if (!this.customID) throw new SyntaxError('CUSTOM_ID_IS_REQUIRED');
+    if (!this.customID) throw new SyntaxError('[DISCORD-BUTTON] Custom id is required');
     return {
       type: this.type,
       label: this.label,

@@ -1,23 +1,6 @@
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API, DISCORD_CDN, imageFormat, imageSize } from '../utils/Constants';
-
-type ImageSize = '128' | '256' | '512' | '1024';
-
-type ImageFormat = 'jpg' | 'jpeg' | 'gif' | 'png' | 'tiff' | 'bmp';
-
-interface AvatarURL {
-  /**
-   * Image size
-   * @default 128
-   */
-  size?: ImageSize;
-
-  /**
-   * Image format
-   * @default 'png'
-   */
-  format?: ImageFormat;
-}
+import { AvatarURL } from '../utils/Interfaces';
 
 export class Member {
   /**
@@ -79,8 +62,13 @@ export class Member {
     }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
   }
 
-  public async addRole(roleID: string) {
-    if (!roleID || typeof roleID !== 'string') throw new SyntaxError('NO_ROLE_ID_PROVIDED_OR_INVALID_ROLE_ID');
+  /**
+   * Add a role
+   * @param {string} roleID
+   * @returns {Promise<void>}
+   */
+  public async addRole(roleID: string): Promise<void> {
+    if (!roleID || typeof roleID !== 'string') throw new SyntaxError('[MEMBER] No role id provided');
     await RestManager.prototype.REQUEST(`${DISCORD_API}guilds/${this.guildID}/members/${this.id}/roles/${roleID}`, {
       token: this._token,
       method: 'PUT',

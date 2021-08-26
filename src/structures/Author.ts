@@ -2,38 +2,7 @@ import { Badges } from './Badges';
 import { DISCORD_CDN, imageFormat, imageSize, GATEWAY_OPCODES } from '../utils/Constants';
 import { Websocket } from '../websocket/Websocket';
 import { VoiceConnection } from '../voice/VoiceConnection';
-
-type ImageSize = '128' | '256' | '512' | '1024';
-
-type ImageFormat = 'jpg' | 'jpeg' | 'gif' | 'png' | 'tiff' | 'bmp';
-
-interface AvatarURL {
-  /**
-   * Image size
-   * @default 128
-   */
-  size?: ImageSize;
-
-  /**
-   * Image format
-   * @default 'png'
-   */
-  format?: ImageFormat;
-}
-
-interface VoiceOptions {
-  /**
-   * Is the bot mute?
-   * @default false
-   */
-  mute?: boolean;
-
-  /**
-   * Is the bot deaf?
-   * @default false
-   */
-  deaf?: boolean;
-}
+import { AvatarURL, VoiceOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing an `Author`
@@ -121,8 +90,7 @@ export class Author {
    * @param {VoiceOptions} state
    */
   public async joinVoiceChannel(channelID: string, state?: VoiceOptions): Promise<VoiceConnection> {
-    if (!channelID || typeof channelID !== 'string')
-      throw new SyntaxError('NO_CHANNEL_ID_PROVIDED_OR_INVALID_CHANNEL_ID');
+    if (!channelID || typeof channelID !== 'string') throw new SyntaxError('[AUTHOR] No voice channel ID provided');
     await this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
       guild_id: this.guildID,
       channel_id: channelID,

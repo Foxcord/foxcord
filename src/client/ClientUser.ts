@@ -4,24 +4,7 @@ import { RestManager } from '../rest/RestManager';
 import { DISCORD_API, DISCORD_CDN, imageFormat, imageSize, CLIENT_EVENTS } from '../utils/Constants';
 import { Badges } from '../structures/Badges';
 import { _testURL } from '../utils/Utils';
-
-type ImageSize = '128' | '256' | '512' | '1024';
-
-type ImageFormat = 'jpg' | 'jpeg' | 'gif' | 'png' | 'tiff' | 'bmp';
-
-interface AvatarURL {
-  /**
-   * Image size
-   * @default 128
-   */
-  size?: ImageSize;
-
-  /**
-   * Image format
-   * @default 'png'
-   */
-  format?: ImageFormat;
-}
+import { AvatarURL } from '../utils/Interfaces';
 
 /**
  * Class symbolozing a `ClientUser`
@@ -78,6 +61,11 @@ export class ClientUser {
    */
   public tag!: string;
 
+  /**
+   * The client bio
+   */
+  public bio!: string;
+
   private _token: string;
   private emitter: EventEmitter;
 
@@ -117,7 +105,7 @@ export class ClientUser {
    * @returns {Promise<void>}
    */
   public async setUsername(username: string): Promise<void> {
-    if (!username || typeof username !== 'string') throw new SyntaxError('NO_USERNAME_PROVIDED_OR_INVALID_USERNAME');
+    if (!username || typeof username !== 'string') throw new SyntaxError('[CLIENT-USER] No username provided');
     return await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
       method: 'PATCH',
       token: this._token,
@@ -131,8 +119,8 @@ export class ClientUser {
    * @returns {Promise<void>}
    */
   public async setAvatar(avatarURL: string): Promise<void> {
-    if (!avatarURL || typeof avatarURL !== 'string') throw new SyntaxError('NO_USERNAME_PROVIDED_OR_INVALID_USERNAME');
-    if (!_testURL(avatarURL)) throw new Error('INVALID_NEW_AVATAR_URL');
+    if (!avatarURL || typeof avatarURL !== 'string') throw new SyntaxError('[CLIENT-USER] No avatar URL provided');
+    if (!_testURL(avatarURL)) throw new Error('[CLIENT-USER] Invalid avatar URL provided');
     return await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
       method: 'PATCH',
       token: this._token,
@@ -142,8 +130,8 @@ export class ClientUser {
 
   /**
    * Get the bot shards count
-   * @returns {Promise<number>}
    * @deprecated
+   * @returns {Promise<number>}
    */
   public async getShardsCount(): Promise<number> {
     const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}gateway/bot`, {
@@ -152,7 +140,7 @@ export class ClientUser {
     });
     const parsedRes = await JSON.parse(res);
     return parsedRes.shards;
-  };
+  }
 
   /**
    * @ignore
@@ -175,6 +163,7 @@ export class ClientUser {
     this.mfaEnable = parsedRes.mfa_enable;
     this.badges = new Badges(parsedRes.public_flags);
     this.tag = `${this.username}#${this.discriminator}`;
+    this.bio = parsedRes.bio;
     this.emitter.emit(CLIENT_EVENTS.READY);
   }
 }

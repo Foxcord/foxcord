@@ -1,16 +1,5 @@
 import { Member } from '../structures/Member';
-
-interface EmojiOptions {
-  /**
-   * The emoji name
-   */
-  name: string;
-
-  /**
-   * The emoji ID
-   */
-  id: string | null;
-}
+import { EmojiOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `MessageReaction`

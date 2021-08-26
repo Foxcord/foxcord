@@ -4,22 +4,9 @@ import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
 import { Channel } from './Channel';
 import { DiscordEmbed } from './DiscordEmbed';
-import { DiscordButton } from './DiscordButton';
-import { DiscordSelectMenu } from './DiscordSelectMenu';
 import { _isEmoji } from '../utils/Utils';
 import { GuildMember } from '../structures/GuildMember';
-
-interface MessageOptions {
-  /**
-   * Button or button array
-   */
-  button?: DiscordButton | DiscordButton[];
-
-  /**
-   * Message menu (don't add a menu if the message already contains one)
-   */
-  selectMenu?: DiscordSelectMenu;
-}
+import { MessageOptionsEdit } from '../utils/Interfaces';
 
 /**
  * CLass symbolizing a `SentMessage`
@@ -129,12 +116,12 @@ export class SentMessage {
   /**
    * Edit the sent message
    * @param {string|MessageEmbed} message
-   * @param {SendOptions} options
+   * @param {MessageOptionsEdit} options
    * @returns {Promise<void>}
    * @example message.edit('some edit');
    */
-  public async edit(message: string | number | DiscordEmbed, options?: MessageOptions): Promise<void> {
-    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
+  public async edit(message: string | number | DiscordEmbed, options?: MessageOptionsEdit): Promise<void> {
+    if (!message) throw new SyntaxError('[SENT-MESSAGE] No message provided');
     const payload = {
       content: '',
       embeds: [] as any,
@@ -151,13 +138,13 @@ export class SentMessage {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('INVALID_EMBED');
+          throw new Error('[SENT-MESSAGE] Invalid embed');
         }
         break;
       default:
-        throw new SyntaxError('INVALID_CONTENT');
+        throw new Error('[SENT-MESSAGE] Invalid content');
     }
-    if (options?.button && options.selectMenu) throw new SyntaxError('TOO_MANY_COMPONENTS');
+    if (options?.button && options.selectMenu) throw new SyntaxError('[SENT-MESSAGE] Too many components');
     if (options?.button) {
       payload.components = [
         {
@@ -169,7 +156,7 @@ export class SentMessage {
       ];
     }
     if (options?.selectMenu) {
-      if (Array.isArray(options.selectMenu)) throw new SyntaxError('SELECT_MENU_IS_ARRAY');
+      if (Array.isArray(options.selectMenu)) throw new SyntaxError('[SENT-MESSAGE] Select meny is array');
       payload.components = [
         {
           type: 1,
@@ -207,7 +194,7 @@ export class SentMessage {
   }
 
   public async addReaction(emoji: string) {
-    if (!emoji || typeof emoji !== 'string') throw new SyntaxError('INVALID_EMOJI_PROVIDED');
+    if (!emoji || typeof emoji !== 'string') throw new SyntaxError('[SENT-MESSAGE] No emoji provided');
     if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
     return await RestManager.prototype.REQUEST(
       `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`,

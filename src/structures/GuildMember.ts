@@ -1,30 +1,41 @@
 import { DISCORD_CDN, imageFormat, imageSize } from '../utils/Constants';
+import { AvatarURL } from '../utils/Interfaces';
 
-type ImageSize = '128' | '256' | '512' | '1024';
-
-type ImageFormat = 'jpg' | 'jpeg' | 'gif' | 'png' | 'tiff' | 'bmp';
-
-interface AvatarURL {
-  /**
-   * Image size
-   * @default 128
-   */
-  size?: ImageSize;
-
-  /**
-   * Image format
-   * @default 'png'
-   */
-  format?: ImageFormat;
-}
-
+/**
+ * Class symbolizing a `GuildMember`
+ * @class
+ */
 export class GuildMember {
+  /**
+   * Member username
+   */
   public username!: string;
+
+  /**
+   * Member discriminator
+   */
   public discriminator!: string;
+
+  /**
+   * Member avatar
+   */
   public avatar!: string;
+
+  /**
+   * Member ID
+   */
   public id!: string;
+
+  /**
+   * Member guild ID
+   */
   public guildID!: string;
 
+  /**
+   * Create a new GuildMember
+   * @param {object} messageData
+   * @constructor
+   */
   constructor(messageData: object) {
     this._patchData(messageData);
   }

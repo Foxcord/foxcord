@@ -1,4 +1,4 @@
-type PremiumNames = 'none' | 'Nitro Classic' | 'Nitro';
+import { PremiumNames } from '../utils/Interfaces';
 
 /**
  * Class symbolozing a `Badges`

@@ -107,7 +107,7 @@ export class Message {
    * @returns {Promise<SentMessage>}
    */
   public async inlineReply(content: string): Promise<SentMessage> {
-    if (!content || typeof content !== 'string') throw new SyntaxError('NO_CONTENT_PROVIDED_OR_INVALID_CONTENT');
+    if (!content || typeof content !== 'string') throw new SyntaxError('[MESSAGE] No content provided');
     const payload = {
       content: content,
       message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },
@@ -125,7 +125,7 @@ export class Message {
    * @returns {Promise<SentMessage>}
    */
   public async inlineReplyNoMention(content: string): Promise<SentMessage> {
-    if (!content || typeof content !== 'string') throw new SyntaxError('NO_CONTENT_PROVIDED_OR_INVALID_CONTENT');
+    if (!content || typeof content !== 'string') throw new SyntaxError('[MESSAGE] No content provided');
     const payload = {
       content: content,
       message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },

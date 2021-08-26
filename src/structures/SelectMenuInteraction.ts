@@ -3,26 +3,8 @@ import { DISCORD_API } from '../utils/Constants';
 import { Message } from './Message';
 import { Member } from './Member';
 import { DiscordEmbed } from '../structures/DiscordEmbed';
-import { DiscordButton } from '../structures/DiscordButton';
-import { DiscordSelectMenu } from './DiscordSelectMenu';
 import { Websocket } from '../websocket/Websocket';
-
-interface SendOptions {
-  /**
-   * Message button
-   */
-  button?: DiscordButton | DiscordButton[] | any;
-
-  /**
-   * Is the reply ephemeral
-   */
-  ephemeral?: boolean;
-
-  /**
-   * Select menu **(only 1)**
-   */
-  selectMenu?: DiscordSelectMenu;
-}
+import { SendOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `SelectMenuInteraction`
@@ -93,7 +75,7 @@ export class SelectMenuInteraction {
    * @returns {Promise<void>}
    */
   public async edit(message: string | number | DiscordEmbed, options?: SendOptions): Promise<void> {
-    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
+    if (!message) throw new SyntaxError('[SELECT-MENU-INTERACTION] No message provided');
     const payload = {
       content: '',
       embeds: [] as any,
@@ -110,13 +92,13 @@ export class SelectMenuInteraction {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('INVALID_EMBED');
+          throw new Error('[SELECT-MENU-INTERACTION] Invalid embed');
         }
         break;
       default:
-        throw new SyntaxError('INVALID_CONTENT');
+        throw new Error('[SELECT-MENU-INTERACTION] Invalid content');
     }
-    if (options?.button && options.selectMenu) throw new SyntaxError('TOO_MANY_COMPONENTS');
+    if (options?.button && options.selectMenu) throw new SyntaxError('[SELECT-MENU-INTERACTION] Too many components');
     if (options?.button) {
       payload.components = [
         {
@@ -128,7 +110,7 @@ export class SelectMenuInteraction {
       ];
     }
     if (options?.selectMenu) {
-      if (Array.isArray(options.selectMenu)) throw new SyntaxError('SELECT_MENU_IS_ARRAY');
+      if (Array.isArray(options.selectMenu)) throw new SyntaxError('[SELECT-MENU-INTERACTION] Select menu is array');
       payload.components = [
         {
           type: 1,
@@ -143,8 +125,9 @@ export class SelectMenuInteraction {
   }
 
   public async reply(message: string | number | DiscordEmbed, options?: SendOptions): Promise<void> {
-    if (this.deferred === true || this.replied === true) throw new SyntaxError('ALREADY_RESPONDED');
-    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
+    if (this.deferred === true || this.replied === true)
+      throw new SyntaxError('[SELECT-MENU-INTERACTION] Already responded');
+    if (!message) throw new SyntaxError('[SELECT-MENU-INTERACTION] No message provided');
     const payload = {
       content: '',
       embeds: [] as any,
@@ -162,13 +145,13 @@ export class SelectMenuInteraction {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('INVALID_EMBED');
+          throw new Error('[SELECT-MENU-INTERACTION] Invalid embed');
         }
         break;
       default:
-        throw new SyntaxError('INVALID_CONTENT');
+        throw new Error('[SELECT-MENU-INTERACTION] Invalid content');
     }
-    if (options?.button && options.selectMenu) throw new SyntaxError('TOO_MANY_COMPONENTS');
+    if (options?.button && options.selectMenu) throw new SyntaxError('[SELECT-MENU-INTERACTION] Too many components');
     if (options?.button) {
       payload.components = [
         {
@@ -180,7 +163,7 @@ export class SelectMenuInteraction {
       ];
     }
     if (options?.selectMenu) {
-      if (Array.isArray(options.selectMenu)) throw new SyntaxError('SELECT_MENU_IS_ARRAY');
+      if (Array.isArray(options.selectMenu)) throw new SyntaxError('[SELECT-MENU-INTERACTION] Select menu is array');
       payload.components = [
         {
           type: 1,
@@ -202,7 +185,7 @@ export class SelectMenuInteraction {
    * @returns {Promise<void>}
    */
   public async defer(ephemeral?: boolean): Promise<void> {
-    if (this.deferred === true || this.replied === true) throw new Error('ALREADY_RESPONDED');
+    if (this.deferred === true || this.replied === true) throw new Error('[SELECT-MENU-INTERACTION] Already responded');
     await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 6, data: { flags: ephemeral ? 64 : null } }),
@@ -217,7 +200,7 @@ export class SelectMenuInteraction {
    * @returns {Promise<void>}
    */
   public async think(ephemeral?: boolean): Promise<void> {
-    if (this.deferred === true || this.replied === true) throw new Error('ALREADY_RESPONDED');
+    if (this.deferred === true || this.replied === true) throw new Error('[SELECT-MENU-INTERACTION] Already responded');
     await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 5, data: { flags: ephemeral ? 64 : null } }),

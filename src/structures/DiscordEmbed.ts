@@ -1,96 +1,14 @@
 import { _testURL, _formatColor } from '../utils/Utils';
-
-interface AuthorOptions {
-  /**
-   * Author name
-   */
-  name?: string;
-
-  /**
-   * Author URL
-   */
-  url?: string;
-
-  /**
-   * Author icon URL
-   */
-  icon_url?: string;
-}
-
-interface ThumbnailOptions {
-  /**
-   * Thumbnail URL
-   */
-  url?: string;
-
-  /**
-   * Thumbnail width
-   */
-  width?: number;
-
-  /**
-   * Thumbnail height
-   */
-  height?: number;
-}
-
-interface ImageOptions {
-  /**
-   * Image URL
-   */
-  url?: string;
-
-  /**
-   * Image width
-   */
-  width?: number;
-
-  /**
-   * Image height
-   */
-  height?: number;
-}
-
-interface FooterOptions {
-  /**
-   * Footer text
-   */
-  text?: string;
-
-  /**
-   * Footer icon URL
-   */
-  icon_url?: string;
-}
-
-interface VideoOptions {
-  /**
-   * Video URL **(no YouTube or Dailymotion link, only `.mp4` link)**
-   */
-  url?: string;
-
-  /**
-   * Video width
-   */
-  width?: number;
-
-  /**
-   * Video height
-   */
-  height?: number;
-}
-
-interface ProviderOptions {
-  /**
-   * Provider name
-   */
-  name?: string;
-
-  /**
-   * Provider URL
-   */
-  url?: string;
-}
+import { Colors } from '../utils/Constants';
+import {
+  FooterOptions,
+  ImageOptions,
+  ThumbnailOptions,
+  VideoOptions,
+  ProviderOptions,
+  AuthorOptions,
+  ColorOptions,
+} from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `DiscordEmbed`
@@ -185,7 +103,7 @@ export class DiscordEmbed {
    * @returns {DiscordEmbed}
    */
   setAuthor(author: string, image?: string, url?: string): DiscordEmbed {
-    if (!author || typeof author !== 'string') throw new SyntaxError('NO_AUTHOR_PROVIDED_OR_INVALID_AUTHOR');
+    if (!author || typeof author !== 'string') throw new SyntaxError('[DISCORD-EMBED] No author provided');
     this.author = {};
     this.author.name = author;
     this.author.url = url && _testURL(url) ? url : undefined;
@@ -199,7 +117,7 @@ export class DiscordEmbed {
    * @returns {DiscordEmbed}
    */
   setTitle(title: string): DiscordEmbed {
-    if (!title || typeof title !== 'string') throw new SyntaxError('NO_TITLE_PROVIDED_OR_INVALID_TITLE');
+    if (!title || typeof title !== 'string') throw new SyntaxError('[DISCORD-EMBED] No title provided');
     this.title = title;
     return this;
   }
@@ -210,7 +128,7 @@ export class DiscordEmbed {
    * @returns {DiscordEmbed}
    */
   setURL(url: string): DiscordEmbed {
-    if (!url || !_testURL(url)) throw new SyntaxError('NO_URL_PROVIDED_OR_INVALID_URL');
+    if (!url || !_testURL(url)) throw new SyntaxError('[DISCORD-EMBED] No url provided');
     this.url = url;
     return this;
   }
@@ -232,7 +150,7 @@ export class DiscordEmbed {
    * @returns {DiscordEmbed}
    */
   setImage(image: string): DiscordEmbed {
-    if (!image || !_testURL(image)) throw new SyntaxError('NO_IMAGE_URL_PROVIDED_OR_INVALID_IMAGE_URL');
+    if (!image || !_testURL(image)) throw new SyntaxError('[DISCORD-EMBED] No image url provided');
     this.image = {};
     this.image.url = image;
     return this;
@@ -254,11 +172,11 @@ export class DiscordEmbed {
 
   /**
    * Set the embed color
-   * @param {string|number} color Hex color
+   * @param {string} color Hex color
    * @returns {DiscordEmbed}
    */
-  setColor(color: string | number): DiscordEmbed {
-    if (!color || typeof color !== 'string') throw new SyntaxError('NO_COLOR_PROVIDED_OR_INVALID_COLOR');
+  setColor(color: string): DiscordEmbed {
+    if (!color || typeof color !== 'string') throw new SyntaxError('[DISCORD-EMBED] No color provided');
     this.color = _formatColor(color);
     return this;
   }
@@ -270,7 +188,7 @@ export class DiscordEmbed {
    */
   setDescription(description: string): DiscordEmbed {
     if (!description || typeof description !== 'string')
-      throw new SyntaxError('NO_DESCRIPTION_PROVIDED_OR_INVALID_DESCRIPTION');
+      throw new SyntaxError('[DISCORD-EMBED] No description provided');
     this.description = description;
     return this;
   }
@@ -284,7 +202,7 @@ export class DiscordEmbed {
    */
   addField(name: string, value: string, inline?: boolean): DiscordEmbed {
     if (!name || typeof name !== 'string' || !value || typeof value !== 'string')
-      throw new SyntaxError('INVALID_FIELD_PROVIDED');
+      throw new SyntaxError('[DISCORD-EMBED] Invalid field provided');
     this.fields.push({
       name: name,
       value: value,
@@ -300,7 +218,7 @@ export class DiscordEmbed {
    * @returns {DiscordEmbed}
    */
   setFooter(footer: string, image?: string): DiscordEmbed {
-    if (!footer || typeof footer !== 'string') throw new SyntaxError('NO_FOOTER_PROVIDED_OR_INVALID_FOOTER');
+    if (!footer || typeof footer !== 'string') throw new SyntaxError('[DISCORD-EMBED] No footer provided');
     this.footer = {};
     this.footer.icon_url = image && typeof image === 'string' && _testURL(image) ? image : undefined;
     this.footer.text = footer;
@@ -314,7 +232,7 @@ export class DiscordEmbed {
    */
   setVideo(video: string): DiscordEmbed {
     if (!video || typeof video !== 'string' || !_testURL(video))
-      throw new SyntaxError('NO_VIDEO_URL_PROVIDED_OR_INVALID_VIDEO_URL');
+      throw new SyntaxError('[DISCORD-EMBED] No video url provided');
     this.video = {};
     this.video.url = video;
     return this;
@@ -328,7 +246,7 @@ export class DiscordEmbed {
    * @deprecated
    */
   setProvider(name: string, url?: string): DiscordEmbed {
-    if (!name || typeof name !== 'string') throw new SyntaxError('NO_NAME_PROVIDED_OR_INVALID_NAME');
+    if (!name || typeof name !== 'string') throw new SyntaxError('[DISCORD-EMBED] No provider name provided');
     this.provider = {};
     this.provider.name = name;
     this.provider.url = url && typeof url === 'string' && _testURL(url) ? url : undefined;

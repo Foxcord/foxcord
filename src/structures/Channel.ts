@@ -1,36 +1,11 @@
 import { DiscordEmbed } from './DiscordEmbed';
 import { DISCORD_API } from '../utils/Constants';
 import { RestManager } from '../rest/RestManager';
-import { DiscordButton } from './DiscordButton';
-import { DiscordSelectMenu } from './DiscordSelectMenu';
 import { Guild } from './Guild';
 import { SentMessage } from './SentMessage';
 import { Client } from '../client/Client';
 import { MessageCollector } from '../utils/collectors/MessageCollector';
-
-interface SendOptions {
-  /**
-   * File or file array
-   */
-  files?: string | string[];
-
-  /**
-   * Button or button array
-   */
-  button?: DiscordButton | DiscordButton[] | any;
-
-  /**
-   * Discord select menu **(only 1)**
-   */
-  selectMenu?: DiscordSelectMenu;
-}
-
-interface CollectorOptions {
-  /**
-   * Collector time **(in seconds)**
-   */
-  time?: number;
-}
+import { SendOptionsWithFile, CollectorOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `Channel`
@@ -64,16 +39,22 @@ export class Channel {
   /**
    * Send a message to the channel
    * @param {string|number|DiscordEmbed} message
-   * @param {SendOptions} options
-   * @returns {Promise<void>}
+   * @param {SendOptionsWithFile} options
+   * @returns {Promise<SentMessage>}
    */
-  public async send(message: string | number | DiscordEmbed, options?: SendOptions): Promise<SentMessage> {
-    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
+  public async send(message: string | number | DiscordEmbed, options?: SendOptionsWithFile): Promise<SentMessage> {
+    if (!message) throw new SyntaxError('[CHANNEL] No message provided');
     const payload = {
       content: '',
       embeds: [] as any,
       components: [] as any,
     };
+    if (options?.files) {
+      RestManager.prototype.POSTFILE(`${DISCORD_API}channels/${this.id}/messages`, options.files, {
+        token: this._token,
+        method: 'POST',
+      });
+    }
     switch (typeof message) {
       case 'string':
         payload.content = message;
@@ -85,13 +66,13 @@ export class Channel {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('INVALID_EMBED');
+          throw new Error('[CHANNEL] INVALID_EMBED');
         }
         break;
       default:
-        throw new SyntaxError('INVALID_CONTENT');
+        throw new Error('[CHANNEL] INVALID_CONTENT');
     }
-    if (options?.button && options.selectMenu) throw new SyntaxError('TOO_MANY_COMPONENTS');
+    if (options?.button && options.selectMenu) throw new SyntaxError('[CHANNEL] Too many components');
     if (options?.button) {
       payload.components = [
         {
@@ -103,27 +84,13 @@ export class Channel {
       ];
     }
     if (options?.selectMenu) {
-      if (Array.isArray(options.selectMenu)) throw new SyntaxError('SELECT_MENU_IS_ARRAY');
+      if (Array.isArray(options.selectMenu)) throw new SyntaxError('[CHANNEL] Select menu is array');
       payload.components = [
         {
           type: 1,
           components: [options.selectMenu.getJSON()],
         },
       ];
-    }
-    if (options?.files) {
-      const res: any = await RestManager.prototype.POSTFILE(
-        `${DISCORD_API}channels/${this.id}/messages`,
-        Array.isArray(options.files) ? options.files.map((el) => el) : options.files,
-        payload.content,
-        payload.embeds,
-        payload.components,
-        {
-          token: this._token,
-          data: JSON.stringify(payload),
-        },
-      );
-      return new SentMessage(await res, this._token);
     }
     const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.id}/messages`, {
       token: this._token,
@@ -140,9 +107,8 @@ export class Channel {
    * @returns {MessageCollector}
    */
   public createMessageCollector(filter: Function, client: Client, options?: CollectorOptions): MessageCollector {
-    if (!filter || typeof filter !== 'function') throw new SyntaxError('NO_FILTER_PROVIDED_OR_INVALID_FILTER');
-    if (!client || client instanceof Client === false)
-      throw new SyntaxError('NO_CLIENT_PROVIDED_OR_INVALID_CLIENT_PROVIDED');
+    if (!filter || typeof filter !== 'function') throw new SyntaxError('[CHANNEL] No filter provided');
+    if (!client) throw new SyntaxError('[CHANNEL] No client provided');
     return new MessageCollector(filter, client, {
       time: options?.time || 30,
       channelID: this.id,

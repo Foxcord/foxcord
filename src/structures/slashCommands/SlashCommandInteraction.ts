@@ -1,26 +1,8 @@
 import { Member } from '../Member';
 import { RestManager } from '../../rest/RestManager';
 import { DiscordEmbed } from '../DiscordEmbed';
-import { DiscordButton } from '../DiscordButton';
 import { DISCORD_API } from '../../utils/Constants';
-import { DiscordSelectMenu } from '../DiscordSelectMenu';
-
-interface SendOptions {
-  /**
-   * Message button
-   */
-  button?: DiscordButton | DiscordButton[] | any;
-
-  /**
-   * Is the reply ephemeral
-   */
-  ephemeral?: boolean;
-
-  /**
-   * Select menu **(only 1)**
-   */
-  selectMenu?: DiscordSelectMenu;
-}
+import { SendOptions } from '../../utils/Interfaces';
 
 /**
  * Class symbolizing a `SlashCommandInteraction`
@@ -86,7 +68,7 @@ export class SlashCommandInteraction {
    * @returns {Promise<void>}
    */
   public async reply(message: string | number | DiscordEmbed, options?: SendOptions): Promise<void> {
-    if (!message) throw new SyntaxError('NO_MESSAGE_PROVIDED');
+    if (!message) throw new SyntaxError('[SLASH-COMMAND-INTERACTION] No message provided');
     const payload = {
       content: '',
       embeds: [] as any,
@@ -104,13 +86,13 @@ export class SlashCommandInteraction {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('INVALID_EMBED');
+          throw new Error('[SLASH-COMMAND-INTERACTION] Invalid embed');
         }
         break;
       default:
-        throw new SyntaxError('INVALID_CONTENT');
+        throw new Error('[SLASH-COMMAND-INTERACTION] Invalid content');
     }
-    if (options?.button && options.selectMenu) throw new SyntaxError('TOO_MANY_COMPONENTS');
+    if (options?.button && options.selectMenu) throw new SyntaxError('[SLASH-COMMAND-INTERACTION] Too many components');
     if (options?.button) {
       payload.components = [
         {
@@ -122,7 +104,7 @@ export class SlashCommandInteraction {
       ];
     }
     if (options?.selectMenu) {
-      if (Array.isArray(options.selectMenu)) throw new SyntaxError('SELECT_MENU_IS_ARRAY');
+      if (Array.isArray(options.selectMenu)) throw new SyntaxError('[SLASH-COMMAND-INTERACTION] Select menu is array');
       payload.components = [
         {
           type: 1,

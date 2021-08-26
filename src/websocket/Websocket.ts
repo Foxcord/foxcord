@@ -6,6 +6,7 @@ import {
   GATEWAY_EVENTS,
   CLIENT_EVENTS,
   WEBSOCKET_CLOSE_CODES,
+  WEBSOCKET_EVENTS,
 } from '../utils/Constants';
 import { Message } from '../structures/Message';
 import { ButtonInteraction } from '../structures/ButtonInteraction';
@@ -17,12 +18,43 @@ import { MessageReaction } from '../structures/MessageReaction';
 import { Collection } from '../utils/Collection';
 
 const wsProperties = {
+  /**
+   * Operating system
+   */
   os: process ? process.platform : 'foxcord',
+
+  /**
+   * Device
+   */
   device: 'foxcord',
+
+  /**
+   * Browser (read Discord documentation)
+   */
   browser: 'foxcord',
+
+  /**
+   * Compress?
+   * @default true
+   */
   compress: true,
+
+  /**
+   * LargeThreshold
+   * @default 250
+   */
   largeThreshold: 250,
+
+  /**
+   * Reconnect
+   * @default true
+   */
   reconnect: true,
+
+  /**
+   * Client shards
+   * @default 1
+   */
   shards: 1,
 };
 
@@ -39,11 +71,35 @@ const heartBeatProperties = {
  * Class symbolizing a `Websocket`
  */
 export class Websocket {
+  /**
+   * WS properties (Discord specific)
+   */
   public wsProperties = wsProperties;
+
+  /**
+   * Client intents
+   */
   public intents?: number;
+
+  /**
+   * Online?
+   */
   public online = false;
+
+  /**
+   * AFK ?
+   */
   public AFK = false;
+
+  /**
+   * Client (WS) ping
+   */
   public ping: number = 0;
+
+  /**
+   * Client shards (auto-generated)
+   */
+  public shardsMap: Map<number, string> = new Map();
 
   private heartbeat = heartBeatProperties;
   private socket!: ws;
@@ -61,18 +117,24 @@ export class Websocket {
     this.clientEmitter = emitter;
   }
 
+  /**
+   * Init WS connection
+   * @param {string} token
+   * @param {any} options
+   * @returns {Promise<void>}
+   */
   public async initConnection(token: string, options?: any): Promise<void> {
     this._options = options;
     this._token = token;
     this.socket = new ws(WEBSOCKET_URL);
-    this.socket.once('open', () => {
+    this.socket.once(WEBSOCKET_EVENTS.OPEN, () => {
       this.online = true;
     });
     setInterval(() => {
       this.getPing();
     }, 2000);
-    this.socket.on('message', async (message) => await this.onMessage(message, options));
-    this.socket.on('close', async (code) => {
+    this.socket.on(WEBSOCKET_EVENTS.MESSAGE, async (message) => await this.onMessage(message, options));
+    this.socket.on(WEBSOCKET_EVENTS.CLOSE, async (code) => {
       const statusCodeString = this.getStatusCodeString(code);
       if (code !== 1000)
         this.clientEmitter.emit(
@@ -80,33 +142,99 @@ export class Websocket {
           'CLOSE_ERROR_CODE_' + code + '_STATUS_' + statusCodeString.toUpperCase(),
         );
       if (this.wsProperties.reconnect === true) {
-        this.clientEmitter.emit(CLIENT_EVENTS.RECONNECTING, statusCodeString);
-        await this.initConnection(this._token, options);
+        try {
+          this.clientEmitter.emit(CLIENT_EVENTS.RECONNECTING, statusCodeString);
+          await this.initConnection(this._token, options);
+        } catch (err) {
+          throw new Error('WEBSOCKET_FAILED_TO_RECONNECT_' + String(err).toUpperCase());
+        }
       } else return;
     });
-    this.socket.once('error', async (error) => {
+    this.socket.once(WEBSOCKET_EVENTS.ERROR, async (error) => {
       this.clientEmitter.emit(CLIENT_EVENTS.ERROR, error);
       if (this.wsProperties.reconnect === true) {
         this.clientEmitter.emit(CLIENT_EVENTS.RECONNECTING);
         await this.initConnection(this._token, options);
       } else return;
     });
-    this.socket.on('pong', async () => {
+    this.socket.on(WEBSOCKET_EVENTS.PONG, async () => {
       this.ping = Date.now() - this.heartbeat.lastPing;
     });
   }
 
-  public async sendToWS(code: number, data: any) {
+  /**
+   * Send to WS
+   * @param {number} code
+   * @param {any} data
+   * @returns {void}
+   */
+  public sendToWS(code: number, data: any): void {
     if (!this.socket || this.socket.readyState !== ws.OPEN) return;
     this.socket.send(JSON.stringify({ op: code, d: data }));
   }
 
+  /**
+   * Get voice connection endpoint for guild
+   * @param {string} guildID
+   * @returns {Promise<any>}
+   */
   public async getVoiceConnectionEndpoint(guildID: string): Promise<any> {
     const guildCollectionContent = this.voiceReadyEventContent.get(guildID);
     return guildCollectionContent || undefined;
   }
 
-  public async getMetaData(code: number, options: any) {
+  /**
+   * Get data to send to the websocket
+   * @param {number} code
+   * @param {any} options
+   */
+  public getMetaData(
+    code: number,
+    options: any,
+  ):
+    | {
+        intents: number | undefined;
+        token: string;
+        compress: boolean;
+        shards: number[];
+        large_threshold: number;
+        properties: {
+          $os: string;
+          $browser: string;
+          $device: string;
+        };
+        presence: {
+          activities: {
+            name: any;
+            type: any;
+            url: any;
+          }[];
+          status: any;
+          afk: boolean;
+        };
+        since?: undefined;
+        activities?: undefined;
+        status?: undefined;
+        afk?: undefined;
+      }
+    | {
+        since: number;
+        activities: {
+          name: any;
+          type: any;
+          url: any;
+        }[];
+        status: any;
+        afk: boolean;
+        intents?: undefined;
+        token?: undefined;
+        compress?: undefined;
+        shards?: undefined;
+        large_threshold?: undefined;
+        properties?: undefined;
+        presence?: undefined;
+      }
+    | undefined {
     switch (code) {
       case GATEWAY_OPCODES.IDENTIFY:
         return {
@@ -175,7 +303,7 @@ export class Websocket {
     }
   }
 
-  private async handleEvent(message: any) {
+  private async handleEvent(message: any): Promise<void> {
     switch (message.t) {
       case GATEWAY_EVENTS.VOICE_SERVER_UPDATE:
         console.log(message.d.endpoint);
@@ -218,7 +346,7 @@ export class Websocket {
     }
   }
 
-  private async initHeartBeat() {
+  private async initHeartBeat(): Promise<void> {
     this.heartbeat.lastSent = Date.now();
     this.sendToWS(GATEWAY_OPCODES.HEARTBEAT, this.heartbeat.last);
   }
@@ -226,6 +354,12 @@ export class Websocket {
   private async getPing(): Promise<void> {
     this.heartbeat.lastPing = Date.now();
     this.socket.ping();
+  }
+
+  public generateShardsArray(shards: number): void {
+    for (var i = 1; i < shards + 1; i++) {
+      console.log('shards ' + i);
+    }
   }
 
   private getStatusCodeString(code: number): string {

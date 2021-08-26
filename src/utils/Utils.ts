@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 import { version } from '../../package.json';
-import { updateLog } from '../utils/Logger';
+import { consoleColors, consoleStyles } from './Constants';
 
 /**
  * Test an URL
@@ -68,4 +68,15 @@ export async function _checkForUpdates(): Promise<void> {
         return;
       }
     });
+}
+
+/**
+ * Update Foxcord log in the console
+ * @param {string} content
+ * @returns {void}
+ */
+export function updateLog(oldVersion: string | any, newVersion: string | any): void {
+  return console.log(
+    `${consoleColors.Blue}Foxcord${consoleStyles.Reset} ${consoleStyles.Bright}AN UPDATE IS AVAILABLE${consoleStyles.Reset}: ${consoleStyles.Reverse}v${oldVersion} to v${newVersion}${consoleStyles.Reset}\n${consoleStyles.Bright}npm i foxcord@latest${consoleStyles.Reset}`,
+  );
 }

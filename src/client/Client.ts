@@ -14,112 +14,26 @@ import { SelectMenuInteraction } from '../structures/SelectMenuInteraction';
 import { Messages } from '../structures/Messages';
 import { Guilds } from '../structures/Guilds';
 import { MessageReaction } from '../structures/MessageReaction';
-
-type DeviceType = 'MOBILE' | 'DESKTOP';
-type IntentsOptions =
-  | 'ALL'
-  | 'GUILD_MEMBERS'
-  | 'GUILD_BANS'
-  | 'GUILD_EMOJIS'
-  | 'GUILD_INTEGRATIONS'
-  | 'GUILD_WEBHOOKS'
-  | 'GUILD_INVITES'
-  | 'GUILD_VOICE_STATES'
-  | 'GUILD_PRESENCES'
-  | 'GUILD_MESSAGES'
-  | 'GUILD_MESSAGE_REACTIONS'
-  | 'GUILD_MESSAGE_TYPING'
-  | 'DIRECT_MESSAGES'
-  | 'DIRECT_MESSAGE_REACTIONS'
-  | 'DIRECT_MESSAGE_TYPING';
-type GameType = 'PLAYING' | 'WATCHING' | 'STREAMING' | 'LISTENING' | 'COMPETING';
-type StatusType = 'ONLINE' | 'IDLE' | 'DND' | 'INVISIBLE';
-
-interface ClientGame {
-  /**
-   * The client game
-   */
-  name: string | undefined;
-
-  /**
-   * The client game URL *(url is required for streaming status)*
-   */
-  url?: string;
-
-  /**
-   * The client game type
-   * @default 'PLAYING'
-   */
-  type?: number;
-}
-
-interface GameOptions {
-  /**
-   * The client game URL *(url is required for streaming status)*
-   */
-  url?: string;
-
-  /**
-   * The client game type
-   * @default 'PLAYING'
-   */
-  type?: GameType;
-}
-
-interface ClientOptions {
-  /**
-   * The client device type
-   * @default 'DESKTOP'
-   */
-  device?: DeviceType;
-
-  /**
-   * Client shards
-   * @default 1
-   * @deprecated
-   */
-  shards?: number
-
-  /**
-   * If the client reconnect itself
-   * @default false
-   */
-  reconnect?: boolean;
-
-  /**
-   * Compress
-   * @default true
-   */
-  compress?: boolean;
-
-  /**
-   * Large threshold
-   * @default 250
-   */
-  largeThreshold?: number;
-
-  /**
-   * Intents you may wanted
-   * @default 'ALL'
-   */
-  intents?: IntentsOptions[];
-}
+import { StatusType, GameOptions, ClientOptions, ClientGame } from '../utils/Interfaces';
 
 export declare interface Client extends EventEmitter {
   /**
    * Emitted when the client receives a message
+   * @param {Message} listener
    * @event Client#MESSAGE
    */
   on(event: 'MESSAGE', listener: (message: Message) => void | Promise<void>): this;
 
   /**
    * Emitted when a slash command is used
+   * @param {SlashCommandInteraction} listener
    * @event Client#SLASH_COMMAND_USED
    */
   on(event: 'SLASH_COMMAND_USED', listener: (interaction: SlashCommandInteraction) => void | Promise<void>): this;
 
   /**
    * Emitted when a button is clicked
+   * @param {ButtonInteraction} listener
    * @event Client#BUTTON_CLICKED
    */
   on(event: 'BUTTON_CLICKED', listener: (button: ButtonInteraction) => void | Promise<void>): this;
@@ -132,6 +46,7 @@ export declare interface Client extends EventEmitter {
 
   /**
    * Emitted when an error occures
+   * @param {Error} listener
    * @event Client#ERROR
    */
   on(event: 'ERROR', listener: (error: Error) => void): this;
@@ -144,24 +59,28 @@ export declare interface Client extends EventEmitter {
 
   /**
    * Emitted when a member joins a guild
+   * @param {GuildMember} listener
    * @event Client#GUILD_MEMBER_ADD
    */
   on(event: 'GUILD_MEMBER_ADD', listener: (member: GuildMember) => void | Promise<void>): this;
 
   /**
    * Emitted when a select menu is clicked
+   * @param {SelectMenuInteraction} listener
    * @event Client#SELECT_MENU_CLICKED
    */
   on(event: 'SELECT_MENU_CLICKED', listener: (selectMenu: SelectMenuInteraction) => void | Promise<void>): this;
 
   /**
    * Emitted when the client is trying to reconnect itself
+   * @param {string} listener
    * @event Client#RECONNECTING
    */
   on(event: 'RECONNECTING', listener: (statusCode: string) => void): this;
 
   /**
    * Emitted when a reaction is added to a message
+   * @param {MessageReaction} listener
    * @event Client#MESSAGE_REACTION_ADD
    */
   on(event: 'MESSAGE_REACTION_ADD', listener: (reaction: MessageReaction) => void | Promise<void>): this;
@@ -230,8 +149,9 @@ export class Client extends EventEmitter {
    * @returns {Promise<void>}
    */
   public async connect(token: string): Promise<void> {
-    if (!token || typeof token !== 'string') throw new SyntaxError('NO_TOKEN_PROVIDED');
-    if (token.length !== 59) throw new SyntaxError('INVALID_TOKEN_PROVIDED');
+    this.WS.generateShardsArray(5);
+    if (!token || typeof token !== 'string') throw new SyntaxError('[CLIENT] No token provided');
+    if (token.length !== 59) throw new SyntaxError('[CLIENT] Invalid token provided');
     this.user = new ClientUser(token, this);
     this._token = token;
     this.users = new Users(this._token);
@@ -250,7 +170,7 @@ export class Client extends EventEmitter {
    * client.setGame('coded using Foxcord', { type: 'WATCHING' });
    */
   public async setGame(game: string, options?: GameOptions): Promise<ClientGame> {
-    if (!game || typeof game !== 'string') throw new SyntaxError('NO_GAME_PROVIDED');
+    if (!game || typeof game !== 'string') throw new SyntaxError('[CLIENT] No game provided');
     this.game = {
       name: game,
       type:
@@ -259,9 +179,9 @@ export class Client extends EventEmitter {
           : 0,
       url:
         options?.url &&
-          _testURL(options.url) &&
-          (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
-            /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
+        _testURL(options.url) &&
+        (/https:\/\/www\.twitch\.tv\/(\w+)/.test(options.url) ||
+          /https:\/\/www\.youtube\.com\/channel\/(\w+)/.test(options.url))
           ? options.url
           : undefined,
     };
@@ -282,8 +202,8 @@ export class Client extends EventEmitter {
    * client.setStatus('IDLE');
    */
   public async setStatus(status: StatusType): Promise<void> {
-    if (!status || typeof status !== 'string') throw SyntaxError('NO_STATUS_PROVIDED');
-    if (!statusType.includes(status.toUpperCase())) throw new SyntaxError('INVALID_STATUS');
+    if (!status || typeof status !== 'string') throw SyntaxError('[CLIENT] No status provided');
+    if (!statusType.includes(status.toUpperCase())) throw new SyntaxError('[CLIENT] Invalid status provided');
     this.status = status.toLowerCase();
     if (this.WS.online === true)
       await this.WS.sendToWS(GATEWAY_OPCODES.PRESENCE_UPDATE, await this.WS.getMetaData(3, this));
@@ -298,12 +218,16 @@ export class Client extends EventEmitter {
    */
   public async setAFK(state?: boolean): Promise<void> {
     if ((this.WS.AFK === true && state === true) || (this.WS.AFK === false && state === false))
-      throw new SyntaxError('THIS_STATUS_IS_ALREADY_IN_USE');
+      throw new Error('[CLIENT] This status is already in use');
     this.WS.AFK = state && typeof state === 'boolean' ? state : this.WS.AFK === true ? false : true;
     await this.WS.sendToWS(GATEWAY_OPCODES.PRESENCE_UPDATE, await this.WS.getMetaData(3, this));
   }
 
-  public get ping() {
+  /**
+   * The client ping
+   * @returns {number}
+   */
+  public get ping(): number {
     return Number(this.WS.ping);
   }
 
@@ -312,7 +236,7 @@ export class Client extends EventEmitter {
    * @private
    * @returns {Promise<void>}
    */
-  private async _patchData(options: ClientOptions | undefined) {
+  private async _patchData(options: ClientOptions | undefined): Promise<void> {
     switch (options?.device?.toUpperCase()) {
       case 'MOBILE':
         this.WS.wsProperties.browser = 'Discord iOS';
@@ -333,9 +257,7 @@ export class Client extends EventEmitter {
     options?.largeThreshold && typeof options.largeThreshold === 'number'
       ? (this.WS.wsProperties.largeThreshold = options.largeThreshold)
       : 250;
-    options?.shards && typeof options.shards === 'number'
-      ? (this.WS.wsProperties.shards = options.shards)
-      : 1
+    options?.shards && typeof options.shards === 'number' ? (this.WS.wsProperties.shards = options.shards) : 1;
     if (!options?.intents || options.intents.map((el) => el.toUpperCase()).includes('ALL')) this.WS.intents = 65534;
     else
       this.WS.intents = INTENTS_ARRAY.map((elm) =>

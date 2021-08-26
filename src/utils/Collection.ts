@@ -9,7 +9,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {TObject | undefined}
    */
   public first(): TObject | undefined {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return this.values().next().value;
   }
 
@@ -18,7 +18,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {TKey | undefined}
    */
   public firstKey(): TKey | undefined {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return this.keys().next().value;
   }
 
@@ -27,7 +27,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {TObject | undefined}
    */
   public last(): TObject | undefined {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return Array.from(this.values()).pop();
   }
 
@@ -36,7 +36,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {TKey | undefined}
    */
   public lastKey(): TKey | undefined {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return Array.from(this.keys()).pop();
   }
 
@@ -46,8 +46,8 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {boolean}
    */
   public exists(value: TKey): boolean {
-    if (!value || typeof value !== 'string') throw new SyntaxError('NO_VALUE_PROVIDED_OR_INVALID_VALUE');
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (!value || typeof value !== 'string') throw new SyntaxError('[COLLECTION] No value provided');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return Object.values(this).includes(value);
   }
 
@@ -56,7 +56,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {TKey}
    */
   public randomKey(): TKey {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return Array.from(this.keys())[Math.floor(Math.random() * Array.from(this.keys()).length)];
   }
 
@@ -65,7 +65,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {TObject}
    */
   public random(): TObject {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return Array.from(this.values())[Math.floor(Math.random() * Array.from(this.values()).length)];
   }
 
@@ -84,7 +84,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {[TKey, TObject] | undefined }
    */
   public find(value: TObject): [TKey, TObject] | undefined {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return Array.from(this.entries()).find(([_k, v]) => v === value);
   }
 
@@ -94,7 +94,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {(TKey | undefined)[]}
    */
   public findAll(obj: TObject): (TKey | undefined)[] {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('T[COLLECTION] The collection is empty');
     return Array.from(this.keys())
       .map((k) => (this.get(k) === obj ? k : undefined))
       .filter((k) => !!k);
@@ -105,7 +105,7 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
    * @returns {Map<TKey, TObject>}
    */
   public sort(): Map<TKey, TObject> {
-    if (this.isEmpty()) throw new Error('THE_COLLECTION_IS_EMPTY');
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return new Map([...this.entries()].sort((a: any, b: any) => a[1] - b[1]));
   }
 }

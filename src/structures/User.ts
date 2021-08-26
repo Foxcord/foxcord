@@ -2,29 +2,8 @@ import { RestManager } from '../rest/RestManager';
 import { DISCORD_CDN, imageFormat, imageSize, DISCORD_API } from '../utils/Constants';
 import { Badges } from './Badges';
 import { DiscordEmbed } from './DiscordEmbed';
-import { DiscordButton } from './DiscordButton';
-
-type ImageSize = '128' | '256' | '512' | '1024';
-
-type ImageFormat = 'jpg' | 'jpeg' | 'gif' | 'png' | 'tiff' | 'bmp';
-
-interface AvatarURL {
-  /**
-   * Image size
-   * @default 128
-   */
-  size?: ImageSize;
-
-  /**
-   * Image format
-   * @default 'png'
-   */
-  format?: ImageFormat;
-}
-
-interface SendOptions {
-  button?: DiscordButton | DiscordButton[] | any;
-}
+import { SentMessage } from '../structures/SentMessage';
+import { AvatarURL, SendOptionsWithFile } from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `User`
@@ -71,22 +50,18 @@ export class User {
     }${options.size && imageSize.indexOf(Number(options.size)) > -1 ? '?size=' + options.size : '?size=128'}`;
   }
 
-  public async send(message: string | number | DiscordEmbed | any, options?: SendOptions) {
-    if (!message) throw new SyntaxError('ERRUR ICI');
+  public async send(message: string | number | DiscordEmbed | any, options?: SendOptionsWithFile) {
+    if (!message) throw new SyntaxError('[USER] No message provided');
     const payload = {
       content: '',
       embeds: [] as any,
       components: [] as any,
     };
-    if (options?.button) {
-      payload.components = [
-        {
-          type: 1,
-          components: Array.isArray(options.button)
-            ? options.button.map((btn) => btn.getJSON())
-            : [options.button.getJSON()],
-        },
-      ];
+    if (options?.files) {
+      RestManager.prototype.POSTFILE(`${DISCORD_API}users/${this.id}/messages`, options.files, {
+        token: this._token,
+        method: 'POST',
+      });
     }
     switch (typeof message) {
       case 'string':
@@ -99,15 +74,37 @@ export class User {
         try {
           payload.embeds = [message.getJSON()];
         } catch (err) {
-          throw new SyntaxError('ERREUR ICI');
+          throw new Error('[USER] Invalid embed');
         }
         break;
+      default:
+        throw new Error('[USER] Invalid content');
     }
-    RestManager.prototype.REQUEST(`${DISCORD_API}users/${this.id}/messages`, {
+    if (options?.button && options.selectMenu) throw new SyntaxError('[USER] Too many components');
+    if (options?.button) {
+      payload.components = [
+        {
+          type: 1,
+          components: Array.isArray(options.button)
+            ? options.button.map((btn) => btn.getJSON())
+            : [options.button.getJSON()],
+        },
+      ];
+    }
+    if (options?.selectMenu) {
+      if (Array.isArray(options.selectMenu)) throw new SyntaxError('[USER] Select meny is array');
+      payload.components = [
+        {
+          type: 1,
+          components: [options.selectMenu.getJSON()],
+        },
+      ];
+    }
+    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}users/${this.id}/messages`, {
       token: this._token,
       data: JSON.stringify(payload),
-      method: 'POST',
     });
+    return new SentMessage(await res, this._token);
   }
 
   /**

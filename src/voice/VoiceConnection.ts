@@ -38,7 +38,7 @@ export class VoiceConnection {
   private setVoiceGuildEndpoint(endpoint: any): void {
     setTimeout(async () => {
       this.voiceWebsocketMap.set(this.guildID, endpoint);
-      console.log(this.voiceWebsocketMap.get(this.guildID));
+      // console.log(this.voiceWebsocketMap.get(this.guildID));
     }, 5000);
   }
 }

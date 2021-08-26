@@ -1,14 +1,7 @@
 import fetch from 'node-fetch';
 import fs from 'fs';
 import FormData from 'form-data';
-
-type MethodOptions = 'GET' | 'PATCH' | 'POST' | 'DELETE' | 'PUT';
-
-interface RestOptions {
-  method?: MethodOptions;
-  data?: object | any;
-  token?: string;
-}
+import { RestOptions } from '../utils/Interfaces';
 
 export class RestManager {
   /**
@@ -47,20 +40,14 @@ export class RestManager {
     await fetch(url, { ...initOptions })
       .then((res) => res.json())
       .then((json) => {
+        console.log(json);
         returnedContent = JSON.stringify(json);
       })
       .catch((err) => console.error(err));
     return returnedContent;
   }
 
-  public async POSTFILE(
-    url: string,
-    files: string | string[],
-    content: string,
-    embeds: any,
-    components: any,
-    options: RestOptions,
-  ): Promise<void> {
+  public async POSTFILE(url: string, files: string | string[], options: RestOptions): Promise<void> {
     let returnedContent;
     const form = new FormData();
     if (Array.isArray(files)) {
@@ -74,9 +61,6 @@ export class RestManager {
       const stats = fs.statSync(files);
       form.append('file', fileStream, { knownLength: stats.size });
     }
-    form.append('content', content);
-    if (embeds) form.append('embeds', this.toObject(embeds));
-    if (components) form.append('components', this.toObject(components));
     const initOptions = {
       method: 'POST',
       headers: this._resolveHeadersContent(options.token),
@@ -127,17 +111,5 @@ export class RestManager {
   private _resolveHeadersContent(headersContent?: string): object | any {
     if (!headersContent) return { 'Content-Type': 'application/json' };
     return { Authorization: 'Bot ' + headersContent, 'Content-Type': 'application/json' };
-  }
-
-  /**
-   * @private
-   * @ignore
-   * @param {any} array
-   * @returns {void}
-   */
-  private toObject(array: any): void {
-    const rv = {} as any;
-    for (let i = 0; i < array.length; ++i) if (array[i] !== undefined) rv[i] = array[i];
-    return rv;
   }
 }

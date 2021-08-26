@@ -1,18 +1,7 @@
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
 import { SentMessage } from './SentMessage';
-
-interface MessageOptions {
-  /**
-   * The message channel ID
-   */
-  channelID: string | number;
-
-  /**
-   * The messge guild ID *(optional)*
-   */
-  guildID?: string;
-}
+import { MessageOptions } from '../utils/Interfaces';
 
 /**
  * CLass symbolizing a `Messages`
@@ -36,8 +25,8 @@ export class Messages {
    * @returns {Promise<SentMessage>}
    */
   public async getByID(id: string | number, options: MessageOptions): Promise<SentMessage> {
-    if (!id) throw new SyntaxError('NO_ID_PROVIDED');
-    if (!options || !options.channelID) throw new SyntaxError('NO_CHANNEL_ID_PROVIDED');
+    if (!id) throw new SyntaxError('[MESSAGES] No id provided');
+    if (!options || !options.channelID) throw new SyntaxError('[MESSAGES] No channel id provided');
     const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${options.channelID}/messages/${id}`, {
       method: 'GET',
       token: this._token,

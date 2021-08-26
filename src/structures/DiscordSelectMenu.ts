@@ -1,28 +1,4 @@
-interface LabelOptions {
-  /**
-   * The label value
-   */
-  value: string;
-  /**
-   * The label description
-   */
-  description: string;
-  /**
-   * the label emoji
-   */
-  emoji?: EmojiOptions;
-}
-
-interface EmojiOptions {
-  /**
-   * The label emoji name
-   */
-  name: string;
-  /**
-   * The label emoji ID (id needed)
-   */
-  id?: string;
-}
+import { LabelOptions } from '../utils/Interfaces';
 
 /**
  * @class
@@ -66,8 +42,8 @@ export class DiscordSelectMenu {
    * @example new DiscordSelectMenu().addLabel('Label', { description: 'Some description', value: 'label' })
    */
   public addLabel(Label: string, options: LabelOptions): DiscordSelectMenu {
-    if (!Label || typeof Label !== 'string') throw new SyntaxError('NO_LABEL_PROVIDED_OR_INVALID_LABEL');
-    if (!options || typeof options !== 'object') throw new SyntaxError('INVALID_LABEL_OPTIONS');
+    if (!Label || typeof Label !== 'string') throw new SyntaxError('[DISCORD-SELECT-MENU] No label provided');
+    if (!options || typeof options !== 'object') throw new SyntaxError('[DISCORD-SELECT-MENU] Invalid label options');
     this.options.push({
       label: Label,
       value: options.value,
@@ -85,7 +61,7 @@ export class DiscordSelectMenu {
    */
   public setCustomID(id: string): DiscordSelectMenu {
     if (!id || typeof id !== 'string' || id.indexOf(' ') >= 0)
-      throw new SyntaxError('NO_CUSTOM_ID_PROVIDED_OR_INVALID_CUSTOM_ID');
+      throw new SyntaxError('[DISCORD-SELECT-MENU] No custom id provided');
     this.customID = id;
     return this;
   }
@@ -98,7 +74,7 @@ export class DiscordSelectMenu {
    */
   public setPlaceHolder(placeHolder: string): DiscordSelectMenu {
     if (!placeHolder || typeof placeHolder !== 'string')
-      throw new SyntaxError('NO_PLACE_HOLDER_PROVIDED_OR_INVALID_PLACE_HOLDER');
+      throw new SyntaxError('[DISCORD-SELECT-MENU] No place holder provided');
     this.placeHolder = placeHolder;
     return this;
   }
@@ -110,7 +86,7 @@ export class DiscordSelectMenu {
    * @example new DiscordSelectMenu().setMinValues(1);
    */
   public setMinValues(value: number): DiscordSelectMenu {
-    if (!value || typeof value !== 'number') throw new SyntaxError('NO_MIN_VALUE_OR_INVALID_MIN_VALUE');
+    if (!value || typeof value !== 'number') throw new SyntaxError('[DISCORD-SELECT-MENU] No min value provided');
     this.minValues = value;
     return this;
   }
@@ -122,7 +98,7 @@ export class DiscordSelectMenu {
    * @example new DiscordSelectMenu().setMaxValues(3);
    */
   public setMaxValues(value: number): DiscordSelectMenu {
-    if (!value || typeof value !== 'number') throw new SyntaxError('NO_MAX_VALUE_OR_INVALID_MAX_VALUE');
+    if (!value || typeof value !== 'number') throw new SyntaxError('[DISCORD-SELECT-MENU] No max value provided');
     this.maxValues = value;
     return this;
   }

@@ -4,22 +4,12 @@ import { Collection } from '../Collection';
 import { COLLECTOR_EVENTS, CLIENT_EVENTS } from '../Constants';
 import { Message } from '../../structures/Message';
 import { Client } from '../../client/Client';
-
-interface CollectorOptions {
-  /**
-   * The collector channel ID
-   */
-  channelID: string;
-
-  /**
-   * Collector time **(in seconds)**
-   */
-  time?: number;
-}
+import { CreateCollectorOptions } from '../Interfaces';
 
 export declare interface MessageCollector extends EventEmitter {
   /**
    * Emitted when the collector collects a message
+   * @param {Message} listener
    * @event MessageCollector#COLLECTED
    */
   on(event: 'COLLECTED', listener: (message: Message) => void | Promise<void>): this;
@@ -58,16 +48,15 @@ export class MessageCollector extends EventEmitter {
    * Create a new MessageCollector
    * @param {Function} filter
    * @param {Client} client
-   * @param {CollectorOptions} options
+   * @param {CreateCollectorOptions} options
    * @constructor
    */
-  constructor(filter: Function, client: Client, options: CollectorOptions) {
+  constructor(filter: Function, client: Client, options: CreateCollectorOptions) {
     super();
-    if (!filter || typeof filter !== 'function') throw new SyntaxError('NO_FILTER_PROVIDED_OR_INVALID_FILTER');
-    if (!client || client instanceof Client === false)
-      throw new SyntaxError('NO_CLIENT_PROVIDED_OR_INVALID_CLIENT_PROVIDED');
+    if (!filter || typeof filter !== 'function') throw new SyntaxError('[MESSAGE-COLLECTOR] No filter provided');
+    if (!client || client instanceof Client === false) throw new SyntaxError('[MESSAGE-COLLECTOR] No client provided');
     if (!options || !options.channelID || typeof options.channelID !== 'string')
-      throw new SyntaxError('NO_CHANNEL_ID_PROVIDED_OR_INVALID_CHANNEL_ID');
+      throw new SyntaxError('[MESSAGE-COLLECTOR] No channel id provided');
     this.client = client;
     this.filter = filter;
     this.channelID = options.channelID;
