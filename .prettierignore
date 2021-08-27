@@ -1,0 +1,4 @@
+/tests
+tsconfig.json
+tslint.json
+/node_modules
