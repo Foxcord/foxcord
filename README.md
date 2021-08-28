@@ -1,18 +1,15 @@
 <p align="center">
     <img src="https://media.discordapp.net/attachments/774598287712845864/867789487664005140/foxcord-text.png" alt="Foxcord logo" width="80%" height="80%"></img>
-    <br>
+        <br>
     <a href="https://www.npmjs.com/package/foxcord"><img src="https://img.shields.io/npm/dt/foxcord.svg?maxAge=3600" alt="NPM downloads" /></a>
-<br>
-<img src="https://forthebadge.com/images/badges/made-with-typescript.svg" alt="Made with Typescript"></img>
+        <br>
+    <img src="https://forthebadge.com/images/badges/made-with-typescript.svg" alt="Made with Typescript"></img>
+        <br>
+        <br>
+    <font><strong>Foxcord is a modern and simple way to interact with the Discord API !</strong></font>
 </p>
 <br>
 
-# ❓ What's Foxcord ?
-
-<h2>Foxcord is a modern and simple way to interact with the Discord API !</h2>
-<h3>In addition to a classic library, Foxcord includes slash commands, selection menus, buttons, and soon a fully integrated voice system!</h3>
-
-*Note: The project is in alpha version and still under development, so it is perfectly normal that you have many errors, we advise you to wait for a stable version before using it for your bot.*
 
 # 🔑 Features
 - Easy to use
@@ -26,14 +23,14 @@
 **Node.Js v12.0.0 is required at least**
 
 ```
-$ npm install foxcord@latest
+$ npm install foxcord
+$ yarn add foxcord
 ```
 
 
 # 💾 Code example
 
-<p align="center">
-
+- Basic code example
 ```js
 const { Client } = require('foxcord');
 
@@ -53,23 +50,37 @@ client.on('MESSAGE', (message) => {
     if(message.content === 'ping') return message.channel.send('🏓 Pong, my ping is ' + client.ping + 'ms!');
 })
 
-client.connect('token');
+client.connect('TOKEN');
 ```
 
+- Registering slash command
 ```js
-const { WebhookClient } = require('foxcord');
+const { SlashCommandBuilder, SlashCommandsManager } = require('foxcord');
 
-const webhookClient = new WebhookClient();
+const slashCommandsManager = new SlashCommandsManager('CLIENT_ID', 'CLIENT_TOKEN');
 
-let webhookSettings = {
-    url: 'some webhook URL',
-    username: 'Captain Webhook',
-    avatarURL: 'some cool image URL'
-}
+const coolSlashCommand = new SlashCommandBuilder()
+    .setName('cool-command')
+    .setDescription('My cool command description');
 
-webhookClient.send('Cool message!', { ...webhookSettings }).then(async webhook => {
-    await webhookClient.send(webhook.avatarURL(), { ...webhookSettings })
-})
+slashCommandsManager.pushCommand(coolSlashCommand, {
+    guildID: 'GUILD_ID' // Optional
+});
+```
+
+- Client using slash commands
+```js
+const { Client } = require('foxcord');
+
+const client = new Client();
+
+client.on('SLASH_COMMAND_USED', (slashCommand) => {
+    slashCommand.reply(slashCommand.member.tag + ' used ' + slashCommand.name, {
+        ephemeral: false // Optional, false by default
+    });
+});
+
+client.connect('TOKEN');
 ```
 
 </p>
@@ -83,8 +94,16 @@ webhookClient.send('Cool message!', { ...webhookSettings }).then(async webhook =
 
 **The documentation is coming very soon, In order to have more information about Foxcord, you can join the [Discord server](https://discord.gg/sTahUmwTsr) !**
 
+# 🔧 Contributing
+
+Before creating an issue, be sure that it has not already been deferred and try to come up with a simple approach to the issue so that deferral is accessible to all.
+
+In order to submit a PR, make sure you have read the [contribution guide](https://github.com/Foxcord/foxcord/.github/CONTRIBUTING.md)
+
 
 # 🚀 Other
+
+*Note: The project is in alpha version and still under development, so it is perfectly normal that you have many errors, we advise you to wait for a stable version before using it for your bot.*
 
 **This project is under `Apache-2.0` license**
 
