@@ -9,8 +9,6 @@ We love your input! We want to make contributing to this project as easy and tra
 
 We use github to host code, to track issues and feature requests, as well as accept pull requests.
 
-<br>
-
 ## How to submit a pull request
 
 1. Fork the repo and create your branch from `master`.
@@ -20,17 +18,11 @@ We use github to host code, to track issues and feature requests, as well as acc
 5. Make sure your code lints.
 6. Issue that pull request!
 
-<br>
-
 ## Any contributions you make will be under the Apache 2.0  License
 In short, when you submit code changes, your submissions are understood to be under the same [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-<br>
-
 ## Report bugs using Github's [issues](https://github.com/Foxcord/foxcord/issues)
 We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/Foxcord/foxcord/issues/new); it's that easy!
-
-<br>
 
 ## Write bug reports with detail, background, and sample code
 
@@ -45,8 +37,6 @@ Great bug reports tend to have:
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
 People *love* thorough bug reports. I'm not even kidding.
-
-<br>
 
 ## License
 By contributing, you agree that your contributions will be licensed under its Apache 2.0 License.
