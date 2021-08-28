@@ -98,7 +98,7 @@ client.connect('TOKEN');
 
 Before creating an issue, be sure that it has not already been deferred and try to come up with a simple approach to the issue so that deferral is accessible to all.
 
-In order to submit a PR, make sure you have read the [contribution guide](https://github.com/Foxcord/foxcord/.github/CONTRIBUTING.md)
+In order to submit a PR, make sure you have read the [contribution guide](https://github.com/Foxcord/foxcord/blob/main/.github/CONTRIBUTING.md)
 
 
 # 🚀 Other
