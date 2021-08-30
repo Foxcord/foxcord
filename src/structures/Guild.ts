@@ -36,7 +36,7 @@ export class Guild {
     });
     let formatRes = JSON.stringify(res);
     formatRes = formatRes.replace('welcome_channels', 'channels');
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 6; i++) {
       formatRes = formatRes.replace('channel_id', 'id');
     }
     formatRes = await JSON.parse(formatRes);
