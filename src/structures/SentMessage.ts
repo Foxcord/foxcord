@@ -183,7 +183,7 @@ export class SentMessage {
   }
 
   /**
-   * Unpin the sent message
+   * Unpin the sent message (if pinned)
    * @returns {Promise<void>}
    */
   public async unpin(): Promise<void> {
@@ -193,7 +193,12 @@ export class SentMessage {
     });
   }
 
-  public async addReaction(emoji: string) {
+  /**
+   * Add emoji to the sent message
+   * @param {string} emoji
+   * @returns {Promise<void>}
+   */
+  public async addReaction(emoji: string): Promise<void> {
     if (!emoji || typeof emoji !== 'string') throw new SyntaxError('[SENT-MESSAGE] No emoji provided');
     if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
     return await RestManager.prototype.REQUEST(

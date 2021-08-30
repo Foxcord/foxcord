@@ -40,7 +40,7 @@ export class RestManager {
     await fetch(url, { ...initOptions })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
         returnedContent = JSON.stringify(json);
       })
       .catch((err) => console.error(err));

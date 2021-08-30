@@ -188,60 +188,13 @@ export class Websocket {
    * @param {number} code
    * @param {any} options
    */
-  public getMetaData(
-    code: number,
-    options: any,
-  ):
-    | {
-        intents: number | undefined;
-        token: string;
-        compress: boolean;
-        shards: number[];
-        large_threshold: number;
-        properties: {
-          $os: string;
-          $browser: string;
-          $device: string;
-        };
-        presence: {
-          activities: {
-            name: any;
-            type: any;
-            url: any;
-          }[];
-          status: any;
-          afk: boolean;
-        };
-        since?: undefined;
-        activities?: undefined;
-        status?: undefined;
-        afk?: undefined;
-      }
-    | {
-        since: number;
-        activities: {
-          name: any;
-          type: any;
-          url: any;
-        }[];
-        status: any;
-        afk: boolean;
-        intents?: undefined;
-        token?: undefined;
-        compress?: undefined;
-        shards?: undefined;
-        large_threshold?: undefined;
-        properties?: undefined;
-        presence?: undefined;
-      }
-    | undefined {
+  public getMetaData(code: number, options: any) {
     switch (code) {
       case GATEWAY_OPCODES.IDENTIFY:
         return {
           intents: this.intents,
           token: this._token,
           compress: this.wsProperties.compress,
-          shards: [0, this.wsProperties.shards],
           large_threshold: this.wsProperties.largeThreshold,
           properties: {
             $os: this.wsProperties.os,
@@ -307,6 +260,7 @@ export class Websocket {
     switch (message.t) {
       case GATEWAY_EVENTS.VOICE_SERVER_UPDATE:
         console.log(message.d.endpoint);
+        console.log(message.d.guild_id);
         if (message.op === 0) this.voiceReadyEventContent.set(await message.d.guild_id, await message.d.endpoint);
         break;
       case GATEWAY_EVENTS.MESSAGE_CREATE:
@@ -356,6 +310,10 @@ export class Websocket {
     this.socket.ping();
   }
 
+  /**
+   *
+   * @param {number} shards
+   */
   public generateShardsArray(shards: number): void {
     for (var i = 1; i < shards + 1; i++) {
       console.log('shards ' + i);

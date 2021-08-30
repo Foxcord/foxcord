@@ -96,7 +96,7 @@ export interface ClientOptions {
 }
 
 // AVATAR URL
-export type ImageSize = '128' | '256' | '512' | '1024';
+export type ImageSize = '128' | '256' | '512' | '1024' | '4096';
 
 export type ImageFormat = 'jpg' | 'jpeg' | 'gif' | 'png' | 'tiff' | 'bmp';
 
@@ -273,6 +273,18 @@ export interface VoiceOptions {
   deaf?: boolean;
 }
 
+export interface BannerOptions {
+  /**
+   * The banner format
+   */
+  type?: ImageFormat;
+
+  /**
+   * The banner size
+   */
+  size: ImageSize;
+}
+
 // BADGES
 export type PremiumNames = 'none' | 'Nitro Classic' | 'Nitro';
 
@@ -443,7 +455,7 @@ export interface MessageOptions {
   guildID?: string;
 }
 
-// SENTMESSAGE
+// SENTMESSAGE + MESSAGE
 export interface MessageOptionsEdit {
   /**
    * Button or button array
@@ -454,6 +466,37 @@ export interface MessageOptionsEdit {
    * Message menu (don't add a menu if the message already contains one)
    */
   selectMenu?: DiscordSelectMenu;
+}
+
+export type AutoArchiveDurationOptions = '60' | '1440' | '4320' | '10080';
+
+export interface CreateThreadOptions {
+  /**
+   * Auto archive duration (24h by default)
+   */
+  autoArchiveDuration?: AutoArchiveDurationOptions;
+}
+
+export interface MessageMentions {
+  /**
+   * Mention member username
+   */
+  username: string;
+
+  /**
+   * Mention member id
+   */
+  id: string;
+
+  /**
+   * Mention member discriminator
+   */
+  discriminator: string;
+
+  /**
+   * Mention member avatar (not avatar URL)
+   */
+  avatar: string;
 }
 
 // MESSAGECOLLECTOR
@@ -467,4 +510,38 @@ export interface CreateCollectorOptions {
    * Collector time **(in seconds)**
    */
   time?: number;
+}
+
+// GUILD
+export interface GuildWelcomeScreen {
+  /**
+   * Guild welcome screen description
+   */
+  description: string;
+
+  /**
+   * Guild welcome channels
+   */
+  channels: GuildWelcomeChannels[] | [];
+}
+
+export interface GuildWelcomeChannels {
+  /**
+   * Welcome channel id
+   */
+  id: string;
+
+  /**
+   * Welcome channel description
+   */
+  description: string;
+}
+
+export type WidgetStyle = '0' | '1' | '2' | '3' | '4';
+
+export interface WidgetStyleOptions {
+  /**
+   * Widget style
+   */
+  style: WidgetStyle;
 }

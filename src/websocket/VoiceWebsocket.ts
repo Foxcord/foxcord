@@ -18,7 +18,7 @@ export class VoiceWebsocket {
     let parsedMsg: any;
     try {
       parsedMsg = JSON.parse(message);
-      // console.log(parsedMsg);
+      console.log(parsedMsg);
     } catch (err) {
       return console.error(err);
     }

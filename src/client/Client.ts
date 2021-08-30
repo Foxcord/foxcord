@@ -149,7 +149,6 @@ export class Client extends EventEmitter {
    * @returns {Promise<void>}
    */
   public async connect(token: string): Promise<void> {
-    this.WS.generateShardsArray(5);
     if (!token || typeof token !== 'string') throw new SyntaxError('[CLIENT] No token provided');
     if (token.length !== 59) throw new SyntaxError('[CLIENT] Invalid token provided');
     this.user = new ClientUser(token, this);

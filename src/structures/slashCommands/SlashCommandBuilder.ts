@@ -105,12 +105,10 @@ export class SlashCommandBuilder {
 
   /**
    * Set the SlashCommand options
-   * @param {SlashCommandOptions | SlashCommandOptions[] | object | object[] | any | any[]} options
+   * @param {SlashCommandOptions | SlashCommandOptions[] | object | object[]} options
    * @returns {SlashCommandBuilder}
    */
-  public setOptions(
-    options: SlashCommandOptions | SlashCommandOptions[] | object | object[] | any | any[],
-  ): SlashCommandBuilder {
+  public setOptions(options: SlashCommandOptions | SlashCommandOptions[] | object | object[]): SlashCommandBuilder {
     if (!options) throw new SyntaxError('[SLASH-COMMAND-BUILDER] No options provided');
     this.options = options;
     return this;
@@ -130,7 +128,7 @@ export class SlashCommandBuilder {
       name: this.name,
       type: 1,
       description: this.description,
-      options: [this.options],
+      options: this.options === undefined ? [] : [this.options],
     };
   }
 }

@@ -1,8 +1,9 @@
 import { Badges } from './Badges';
-import { DISCORD_CDN, imageFormat, imageSize, GATEWAY_OPCODES } from '../utils/Constants';
+import { DISCORD_API, DISCORD_CDN, imageFormat, imageSize, GATEWAY_OPCODES } from '../utils/Constants';
 import { Websocket } from '../websocket/Websocket';
 import { VoiceConnection } from '../voice/VoiceConnection';
-import { AvatarURL, VoiceOptions } from '../utils/Interfaces';
+import { RestManager } from '../rest/RestManager';
+import { AvatarURL, VoiceOptions, BannerOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing an `Author`
@@ -101,7 +102,26 @@ export class Author {
     return new VoiceConnection(this.WS, this.guildID, await endpoint);
   }
 
-  public async leaveVoiceChannel() {
+  /**
+   * Get the author banner URL
+   * @param {BannerOptions} options
+   * @returns {Promise<string>}
+   */
+  public async bannerURL(options?: BannerOptions): Promise<string> {
+    const res = await RestManager.prototype.REQUEST(`${DISCORD_API}users/${this.id}`, {
+      method: 'GET',
+      token: this._token,
+    });
+    return `${DISCORD_CDN}banners/${this.id}/${await JSON.parse(res).banner}.${
+      options && options.type && typeof options.type === 'string' ? options.type : 'gif'
+    }?size=${options && options.size && imageSize.indexOf(Number(options.size)) > -1 ? String(options.size) : '4096'}`;
+  }
+
+  /**
+   * Leave voice channel (if connected)
+   * @param {Promise<void>}
+   */
+  public async leaveVoiceChannel(): Promise<void> {
     this.WS.sendToWS(GATEWAY_OPCODES.VOICE_STATE_UPDATE, {
       guild_id: this.guildID,
       channel_id: null,

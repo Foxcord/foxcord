@@ -116,7 +116,7 @@ export enum consoleStyles {
 export const imageFormat: string[] = ['jpg', 'jpeg', 'gif', 'png', 'tiff', 'bmp'];
 
 // IMAGE SIZE
-export const imageSize: number[] = [128, 256, 512, 1024];
+export const imageSize: number[] = [128, 256, 512, 1024, 4096];
 
 // DEVICE TYPE
 export const deviceType: string[] = ['DESKTOP', 'MOBILE'];

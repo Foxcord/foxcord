@@ -6,6 +6,7 @@ import { Websocket } from '../websocket/Websocket';
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
 import { SentMessage } from './SentMessage';
+import { CreateThreadOptions, MessageMentions } from '../utils/Interfaces';
 
 /**
  * Class symbolizing a `Message`
@@ -55,7 +56,7 @@ export class Message {
   /**
    * Message mentions **(users/bots only)**
    */
-  public mentions!: string[] | [];
+  public mentions!: MessageMentions[] | [];
 
   /**
    * Message mentions **(roles only)**
@@ -139,11 +140,91 @@ export class Message {
   }
 
   /**
+   * Pin the message
+   * @returns {Promise<void>}
+   */
+  public async pin(): Promise<void> {
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+      token: this._token,
+      method: 'PUT',
+    });
+  }
+
+  /**
+   * Create thread from message
+   * @param {string} name
+   * @param {CreateThreadOptions} options
+   * @returns {Promise<void>}
+   * @example message.createThread('New thread', { autoArchiveDuration: '1440' });
+   */
+  public async createThread(name: string, options?: CreateThreadOptions): Promise<void> {
+    if (!name || typeof name !== 'string') throw new SyntaxError('[MESSAGE] No thread name provided');
+    return await RestManager.prototype.REQUEST(
+      `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/threads`,
+      {
+        token: this._token,
+        method: 'POST',
+        data: JSON.stringify({
+          name: name,
+          auto_archive_duration:
+            options && options.autoArchiveDuration && typeof options.autoArchiveDuration === 'string'
+              ? Number(options.autoArchiveDuration)
+              : 1440,
+        }),
+      },
+    );
+  }
+
+  /**
+   * Unpin the messahe (if pinned)
+   * @returns {Promise<void>}
+   */
+  public async unpin(): Promise<void> {
+    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+      token: this._token,
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Add emoji to the message
+   * @param {string} emoji
+   * @returns {Promise<void>}
+   */
+  public async addReaction(emoji: string): Promise<void> {
+    if (!emoji || typeof emoji !== 'string') throw new SyntaxError('[MESSAGE] No emoji provided');
+    if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
+    return await RestManager.prototype.REQUEST(
+      `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`,
+      {
+        token: this._token,
+        method: 'PUT',
+      },
+    );
+  }
+
+  /**
+   * Reply to the message
+   * @param {string} message
+   * @returns {Promise<SentMessage>}
+   */
+  public async reply(message: string): Promise<SentMessage> {
+    if (!message) throw new SyntaxError('[MESSAGE] No message provided');
+    message = `<@${this.author.id}> ${message}`;
+    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
+      token: this._token,
+      data: JSON.stringify({ content: message }),
+    });
+    return new SentMessage(await res, this._token);
+  }
+
+  /**
    * @ignore
    * @private
    * @returns {Promise<void>}
    */
   private async _patchData(data: object | any): Promise<void> {
+    console.log(data);
     this.channel = new Channel(data.channel_id, this._token, data.guild_id !== undefined ? data.guild_id : null);
     this.author = new Author(data, this._token, this.WS);
     this.content = data.content;
