@@ -259,8 +259,8 @@ export class Websocket {
   private async handleEvent(message: any): Promise<void> {
     switch (message.t) {
       case GATEWAY_EVENTS.VOICE_SERVER_UPDATE:
-        console.log(message.d.endpoint);
-        console.log(message.d.guild_id);
+        // console.log(message.d.endpoint);
+        // console.log(message.d.guild_id);
         if (message.op === 0) this.voiceReadyEventContent.set(await message.d.guild_id, await message.d.endpoint);
         break;
       case GATEWAY_EVENTS.MESSAGE_CREATE:
