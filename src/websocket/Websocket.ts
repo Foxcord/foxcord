@@ -310,16 +310,6 @@ export class Websocket {
     this.socket.ping();
   }
 
-  /**
-   *
-   * @param {number} shards
-   */
-  public generateShardsArray(shards: number): void {
-    for (var i = 1; i < shards + 1; i++) {
-      console.log('shards ' + i);
-    }
-  }
-
   private getStatusCodeString(code: number): string {
     if (code >= 0 && code <= 999) {
       return '(Unused)';
