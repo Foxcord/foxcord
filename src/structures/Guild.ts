@@ -56,11 +56,12 @@ export class Guild {
    * @returns {string}
    */
   public widgetImage(options?: WidgetStyleOptions): string {
-    return `${DISCORD_API}guilds/713699044811341895/widget.png?style=${options && options.style && typeof options.style === 'string'
+    return `${DISCORD_API}guilds/713699044811341895/widget.png?style=${
+      options && options.style && typeof options.style === 'string'
         ? options.style === '0'
           ? 'shield'
           : `banner` + options.style
         : 'banner1'
-      }`;
+    }`;
   }
 }

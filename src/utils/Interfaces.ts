@@ -525,6 +525,18 @@ export interface GuildWelcomeScreen {
   channels: GuildWelcomeChannels[] | [];
 }
 
+export interface ListGuildOptions {
+  /**
+   * Guild ID
+   */
+  id: string;
+
+  /**
+   * Guild name
+   */
+  name: string;
+}
+
 export interface GuildWelcomeChannels {
   /**
    * Welcome channel id

@@ -2,10 +2,9 @@ import { EventEmitter } from 'events';
 
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API, DISCORD_CDN, imageFormat, imageSize, CLIENT_EVENTS } from '../utils/Constants';
-import { Guild } from '../structures/Guild';
 import { Badges } from '../structures/Badges';
 import { _testURL } from '../utils/Utils';
-import { AvatarURL } from '../utils/Interfaces';
+import { AvatarURL, ListGuildOptions } from '../utils/Interfaces';
 
 /**
  * Class symbolozing a `ClientUser`
@@ -133,7 +132,7 @@ export class ClientUser {
    * Get the client guilds list
    * @returns {Promise<Guild[]>}
    */
-  public async getGuildsList(): Promise<Guild[]> {
+  public async getGuildsList(): Promise<ListGuildOptions[]> {
     const res = await RestManager.prototype.request(`${DISCORD_API}users/@me/guilds`, {
       method: 'GET',
       token: this._token,

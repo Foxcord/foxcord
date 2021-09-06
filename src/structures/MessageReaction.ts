@@ -51,7 +51,7 @@ export class MessageReaction {
   /**
    * @ignore
    * @private
-   * @param {any} data 
+   * @param {any} data
    * @returns {void}
    */
   private _patchData(data: any): void {
