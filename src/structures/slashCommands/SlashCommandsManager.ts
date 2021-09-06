@@ -130,7 +130,7 @@ export class SlashCommandsManager {
       options && options.guildID && typeof options.guildID === 'string'
         ? (this.guildID = options.guildID)
         : (this.guildID = undefined);
-    const res = await RestManager.prototype.REQUEST(
+    const res = await RestManager.prototype.request(
       `${DISCORD_API}applications/${this.id}/${this.guildID !== undefined ? `guilds/${this.guildID}/` : ''}commands`,
       {
         token: this._token,
@@ -158,7 +158,7 @@ export class SlashCommandsManager {
       options && options.guildID && typeof options.guildID === 'string'
         ? (this.guildID = options.guildID)
         : (this.guildID = undefined);
-    const res = await RestManager.prototype.REQUEST(
+    const res = await RestManager.prototype.request(
       `${DISCORD_API}applications/${this.id}/${this.guildID !== undefined ? `guilds/${this.guildID}/` : ''}commands/${
         options.commandID
       }`,

@@ -24,10 +24,10 @@ export class Messages {
    * @param {string|number} id
    * @returns {Promise<SentMessage>}
    */
-  public async getByID(id: string | number, options: MessageOptions): Promise<SentMessage> {
+  public async get(id: string | number, options: MessageOptions): Promise<SentMessage> {
     if (!id) throw new SyntaxError('[MESSAGES] No id provided');
     if (!options || !options.channelID) throw new SyntaxError('[MESSAGES] No channel id provided');
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${options.channelID}/messages/${id}`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}channels/${options.channelID}/messages/${id}`, {
       method: 'GET',
       token: this._token,
     });

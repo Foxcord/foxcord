@@ -69,7 +69,7 @@ export class Member {
    */
   public async addRole(roleID: string): Promise<void> {
     if (!roleID || typeof roleID !== 'string') throw new SyntaxError('[MEMBER] No role id provided');
-    await RestManager.prototype.REQUEST(`${DISCORD_API}guilds/${this.guildID}/members/${this.id}/roles/${roleID}`, {
+    await RestManager.prototype.request(`${DISCORD_API}guilds/${this.guildID}/members/${this.id}/roles/${roleID}`, {
       token: this._token,
       method: 'PUT',
     });
@@ -82,9 +82,10 @@ export class Member {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: object | any): Promise<void> {
+  private _patchData(data: any): void {
     this.id = data.user.id;
     this.username = data.user.username;
     this.avatar = data.user.avatar;

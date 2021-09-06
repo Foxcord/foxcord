@@ -141,13 +141,13 @@ export class WebhookMessage {
     if (timeout && typeof timeout === 'number') {
       const deleteTimeout = Number(timeout) * 1000;
       setTimeout(() => {
-        this.restManager.REQUEST(this.url, {
+        this.restManager.request(this.url, {
           method: 'DELETE',
         });
       }, deleteTimeout);
       return;
     } else {
-      this.restManager.REQUEST(this.url, {
+      this.restManager.request(this.url, {
         method: 'DELETE',
       });
       return;
@@ -176,11 +176,11 @@ export class WebhookMessage {
     if (options.timeout && typeof options.timeout === 'number') {
       const editTimeout = Number(options.timeout) * 1000;
       setTimeout(() => {
-        this.restManager.REQUEST(this.url, { method: 'PATCH', data: JSON.stringify(payload) });
+        this.restManager.request(this.url, { method: 'PATCH', data: JSON.stringify(payload) });
       }, editTimeout);
       return this;
     }
-    this.restManager.REQUEST(this.url, { method: 'PATCH', data: JSON.stringify(payload) });
+    this.restManager.request(this.url, { method: 'PATCH', data: JSON.stringify(payload) });
     return this;
   }
 

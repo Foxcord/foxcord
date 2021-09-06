@@ -1,35 +1,7 @@
 import { WebhookMessage } from './WebhookMessage';
 import { RestManager } from '../../rest/RestManager';
 import { DiscordEmbed } from '../../structures/DiscordEmbed';
-
-interface WebhookOptions {
-  /**
-   * The webhook URL
-   */
-  url: string;
-
-  /**
-   * The webhook username *(username cannot be 'Clyde')*
-   */
-  username: string;
-
-  /**
-   * The webhook avatar URL *(no image file)*
-   */
-  avatarURL?: string;
-}
-
-interface CreateWebhookOptions {
-  /**
-   * The webhook username *(username cannot be 'Clyde')*
-   */
-  username: string;
-
-  /**
-   * The webhook avatar URL *(no image file)*
-   */
-  avatarURL?: string;
-}
+import { WebhookOptions, CreateWebhookOptions } from '../../utils/Interfaces';
 
 /**
  * Class symbolizing a `WebhookClient`
@@ -96,7 +68,7 @@ export class WebhookClient {
         }
       }
     }
-    const res = await this.restManager.REQUEST(`${options.url}?wait=true`, { data: JSON.stringify(payload) });
+    const res = await this.restManager.request(`${options.url}?wait=true`, { data: JSON.stringify(payload) });
     return new WebhookMessage(options.url, res);
   }
 
@@ -122,7 +94,7 @@ export class WebhookClient {
       !/https:\/\/discord.com\/api\/webhooks\/(\w+)/.test(options.url)
     )
       throw new SyntaxError('NO_URL_PROVIDED_OR_INVALID_URL');
-    const res = await this.restManager.POSTWEBHOOKFILE(options.url, filePath, {
+    const res = await this.restManager.postWebhookFile(options.url, filePath, {
       data: JSON.stringify({
         username: options.username,
         avatar_url: options.avatarURL && typeof options.avatarURL === 'string' ? options.avatarURL : null,

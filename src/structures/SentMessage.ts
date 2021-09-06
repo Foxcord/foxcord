@@ -107,7 +107,7 @@ export class SentMessage {
    * @example message.delete();
    */
   async delete(): Promise<void> {
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages/${this.id}`, {
+    return await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/messages/${this.id}`, {
       token: this._token,
       method: 'DELETE',
     });
@@ -164,7 +164,7 @@ export class SentMessage {
         },
       ];
     }
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages/${this.id}`, {
+    return await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/messages/${this.id}`, {
       token: this._token,
       method: 'PATCH',
       data: JSON.stringify(payload),
@@ -176,7 +176,7 @@ export class SentMessage {
    * @returns {Promise<void>}
    */
   public async pin(): Promise<void> {
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+    return await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
       token: this._token,
       method: 'PUT',
     });
@@ -187,7 +187,7 @@ export class SentMessage {
    * @returns {Promise<void>}
    */
   public async unpin(): Promise<void> {
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+    return await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
       token: this._token,
       method: 'DELETE',
     });
@@ -201,7 +201,7 @@ export class SentMessage {
   public async addReaction(emoji: string): Promise<void> {
     if (!emoji || typeof emoji !== 'string') throw new SyntaxError('[SENT-MESSAGE] No emoji provided');
     if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
-    return await RestManager.prototype.REQUEST(
+    return await RestManager.prototype.request(
       `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`,
       {
         token: this._token,
@@ -213,9 +213,10 @@ export class SentMessage {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: object | any): Promise<void> {
+  private _patchData(data: object | any): void {
     this.channel = new Channel(data.channel_id, data.guild_id, this._token);
     this.content = data.content;
     this.author = new GuildMember(data);

@@ -45,10 +45,16 @@ export class MessageReaction {
    */
   constructor(data: object, token: string) {
     this._token = token;
-    this.patchData(data);
+    this._patchData(data);
   }
 
-  private async patchData(data: any) {
+  /**
+   * @ignore
+   * @private
+   * @param {any} data 
+   * @returns {void}
+   */
+  private _patchData(data: any): void {
     this.userID = data.user_id;
     this.messageID = data.message_id;
     this.emoji = {

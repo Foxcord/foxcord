@@ -113,7 +113,7 @@ export class Message {
       content: content,
       message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },
     };
-    const res: any = RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
+    const res: any = RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/messages`, {
       token: this._token,
       data: JSON.stringify(payload),
     });
@@ -132,7 +132,7 @@ export class Message {
       message_reference: { message_id: this.id, channel_id: this.channel.id, guild_id: this.channel.guild.id },
       allowed_mentions: { replied_user: false },
     };
-    const res: any = RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
+    const res: any = RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/messages`, {
       token: this._token,
       data: JSON.stringify(payload),
     });
@@ -144,7 +144,7 @@ export class Message {
    * @returns {Promise<void>}
    */
   public async pin(): Promise<void> {
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+    return await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
       token: this._token,
       method: 'PUT',
     });
@@ -159,7 +159,7 @@ export class Message {
    */
   public async createThread(name: string, options?: CreateThreadOptions): Promise<void> {
     if (!name || typeof name !== 'string') throw new SyntaxError('[MESSAGE] No thread name provided');
-    return await RestManager.prototype.REQUEST(
+    return await RestManager.prototype.request(
       `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/threads`,
       {
         token: this._token,
@@ -180,7 +180,7 @@ export class Message {
    * @returns {Promise<void>}
    */
   public async unpin(): Promise<void> {
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
+    return await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/pins/messages/${this.id}`, {
       token: this._token,
       method: 'DELETE',
     });
@@ -194,7 +194,7 @@ export class Message {
   public async addReaction(emoji: string): Promise<void> {
     if (!emoji || typeof emoji !== 'string') throw new SyntaxError('[MESSAGE] No emoji provided');
     if (emoji.startsWith('<')) emoji = emoji.replace('<:', '').replace('>', '');
-    return await RestManager.prototype.REQUEST(
+    return await RestManager.prototype.request(
       `${DISCORD_API}channels/${this.channel.id}/messages/${this.id}/reactions/${encodeURIComponent(emoji)}/@me`,
       {
         token: this._token,
@@ -211,7 +211,7 @@ export class Message {
   public async reply(message: string): Promise<SentMessage> {
     if (!message) throw new SyntaxError('[MESSAGE] No message provided');
     message = `<@${this.author.id}> ${message}`;
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.channel.id}/messages`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}channels/${this.channel.id}/messages`, {
       token: this._token,
       data: JSON.stringify({ content: message }),
     });
@@ -221,9 +221,10 @@ export class Message {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: object | any): Promise<void> {
+  private _patchData(data: any): void {
     console.log(data);
     this.channel = new Channel(data.channel_id, this._token, data.guild_id !== undefined ? data.guild_id : null);
     this.author = new Author(data, this._token, this.WS);

@@ -58,7 +58,7 @@ export class User {
       components: [] as any,
     };
     if (options?.files) {
-      RestManager.prototype.POSTFILE(`${DISCORD_API}users/${this.id}/messages`, options.files, {
+      RestManager.prototype.postFile(`${DISCORD_API}users/${this.id}/messages`, options.files, {
         token: this._token,
         method: 'POST',
       });
@@ -100,7 +100,7 @@ export class User {
         },
       ];
     }
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}users/${this.id}/messages`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}users/${this.id}/messages`, {
       token: this._token,
       data: JSON.stringify(payload),
     });
@@ -110,9 +110,10 @@ export class User {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: any): Promise<void> {
+  private _patchData(data: any): void {
     this.avatar = data.avatar;
     this.id = data.id;
     this.discriminator = data.discriminator;

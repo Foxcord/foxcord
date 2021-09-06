@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API, DISCORD_CDN, imageFormat, imageSize, CLIENT_EVENTS } from '../utils/Constants';
+import { Guild } from '../structures/Guild';
 import { Badges } from '../structures/Badges';
 import { _testURL } from '../utils/Utils';
 import { AvatarURL } from '../utils/Interfaces';
@@ -106,7 +107,7 @@ export class ClientUser {
    */
   public async setUsername(username: string): Promise<void> {
     if (!username || typeof username !== 'string') throw new SyntaxError('[CLIENT-USER] No username provided');
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
+    return await RestManager.prototype.request(`${DISCORD_API}users/@me`, {
       method: 'PATCH',
       token: this._token,
       data: JSON.stringify({ username: username }),
@@ -121,11 +122,24 @@ export class ClientUser {
   public async setAvatar(avatarURL: string): Promise<void> {
     if (!avatarURL || typeof avatarURL !== 'string') throw new SyntaxError('[CLIENT-USER] No avatar URL provided');
     if (!_testURL(avatarURL)) throw new Error('[CLIENT-USER] Invalid avatar URL provided');
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
+    return await RestManager.prototype.request(`${DISCORD_API}users/@me`, {
       method: 'PATCH',
       token: this._token,
       data: JSON.stringify({ avatar: avatarURL }),
     });
+  }
+
+  /**
+   * Get the client guilds list
+   * @returns {Promise<Guild[]>}
+   */
+  public async getGuildsList(): Promise<Guild[]> {
+    const res = await RestManager.prototype.request(`${DISCORD_API}users/@me/guilds`, {
+      method: 'GET',
+      token: this._token,
+    });
+    console.log(JSON.parse(await res));
+    return JSON.parse(await res);
   }
 
   /**
@@ -134,7 +148,7 @@ export class ClientUser {
    * @returns {Promise<number>}
    */
   public async getShardsCount(): Promise<number> {
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}gateway/bot`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}gateway/bot`, {
       method: 'GET',
       token: this._token,
     });
@@ -148,7 +162,7 @@ export class ClientUser {
    * @returns {Promise<void>}
    */
   private async _patchData(): Promise<void> {
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}users/@me`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}users/@me`, {
       token: this._token,
       method: 'GET',
     });

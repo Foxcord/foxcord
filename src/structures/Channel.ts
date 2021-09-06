@@ -50,7 +50,7 @@ export class Channel {
       components: [] as any,
     };
     if (options?.files) {
-      RestManager.prototype.POSTFILE(`${DISCORD_API}channels/${this.id}/messages`, options.files, {
+      RestManager.prototype.postFile(`${DISCORD_API}channels/${this.id}/messages`, options.files, {
         token: this._token,
         method: 'POST',
       });
@@ -92,7 +92,7 @@ export class Channel {
         },
       ];
     }
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${this.id}/messages`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}channels/${this.id}/messages`, {
       token: this._token,
       data: JSON.stringify(payload),
     });

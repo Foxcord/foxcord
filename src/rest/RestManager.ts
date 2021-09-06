@@ -5,12 +5,12 @@ import { RestOptions } from '../utils/Interfaces';
 
 export class RestManager {
   /**
-   * REQUEST
+   * Request
    * @param {string} url
    * @param {RestOptions} options
    * @returns {Promise<void>}
    */
-  public async REQUEST(url: string, options: RestOptions): Promise<object | any> {
+  public async request(url: string, options: RestOptions): Promise<object | any> {
     const initOptions = {
       method: 'POST',
       headers: this._resolveHeadersContent(options.token),
@@ -47,7 +47,7 @@ export class RestManager {
     return returnedContent;
   }
 
-  public async POSTFILE(url: string, files: string | string[], options: RestOptions): Promise<void> {
+  public async postFile(url: string, files: string | string[], options: RestOptions): Promise<void> {
     let returnedContent;
     const form = new FormData();
     if (Array.isArray(files)) {
@@ -83,7 +83,7 @@ export class RestManager {
    * @param {RestOptions} options
    * @returns {Promise<void>}
    */
-  public async POSTWEBHOOKFILE(url: string, file: string, options: RestOptions): Promise<void> {
+  public async postWebhookFile(url: string, file: string, options: RestOptions): Promise<void> {
     let returnedContent;
     const form = new FormData();
     const parsedData = JSON.parse(options.data);

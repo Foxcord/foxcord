@@ -108,7 +108,7 @@ export class Author {
    * @returns {Promise<string>}
    */
   public async bannerURL(options?: BannerOptions): Promise<string> {
-    const res = await RestManager.prototype.REQUEST(`${DISCORD_API}users/${this.id}`, {
+    const res = await RestManager.prototype.request(`${DISCORD_API}users/${this.id}`, {
       method: 'GET',
       token: this._token,
     });
@@ -133,9 +133,10 @@ export class Author {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: object | any): Promise<void> {
+  private _patchData(data: any): void {
     this.guildID = data.guild_id;
     this.username = data.author.username;
     this.bot = data.author.bot !== undefined;

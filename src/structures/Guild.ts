@@ -1,5 +1,6 @@
 import { RestManager } from '../rest/RestManager';
 import { DISCORD_API } from '../utils/Constants';
+import { GuildStickers } from './GuildStickers';
 import { GuildWelcomeScreen, WidgetStyleOptions } from '../utils/Interfaces';
 
 /**
@@ -12,6 +13,11 @@ export class Guild {
    */
   public id!: string;
 
+  /**
+   * Guild stickers
+   */
+  public stickers!: GuildStickers;
+
   private _token: string;
 
   /**
@@ -23,6 +29,7 @@ export class Guild {
   constructor(id: string, token: string) {
     this.id = id;
     this._token = token;
+    this.stickers = new GuildStickers(this.id, this._token);
   }
 
   /**
@@ -30,7 +37,7 @@ export class Guild {
    * @returns {Promise<GuildWelcomeScreen>}
    */
   public async welcomeScreen(): Promise<GuildWelcomeScreen> {
-    const res = await RestManager.prototype.REQUEST(`${DISCORD_API}guilds/${this.id}/welcome-screen`, {
+    const res = await RestManager.prototype.request(`${DISCORD_API}guilds/${this.id}/welcome-screen`, {
       method: 'GET',
       token: this._token,
     });
@@ -49,12 +56,11 @@ export class Guild {
    * @returns {string}
    */
   public widgetImage(options?: WidgetStyleOptions): string {
-    return `${DISCORD_API}guilds/713699044811341895/widget.png?style=${
-      options && options.style && typeof options.style === 'string'
+    return `${DISCORD_API}guilds/713699044811341895/widget.png?style=${options && options.style && typeof options.style === 'string'
         ? options.style === '0'
           ? 'shield'
           : `banner` + options.style
         : 'banner1'
-    }`;
+      }`;
   }
 }

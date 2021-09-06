@@ -23,9 +23,9 @@ export class Channels {
    * @param {string|number} id
    * @returns {Promise<Channel>}
    */
-  public async getByID(id: string | number): Promise<Channel> {
+  public async get(id: string | number): Promise<Channel> {
     if (!id) throw new SyntaxError('[CHANNELS] No id provided');
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}channels/${id}`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}channels/${id}`, {
       method: 'GET',
       token: this._token,
     });

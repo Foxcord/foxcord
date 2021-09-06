@@ -23,9 +23,9 @@ export class Guilds {
    * @param {string|number} id
    * @returns {Promise<Guild>}
    */
-  public async getByID(id: string | number): Promise<Guild> {
+  public async get(id: string | number): Promise<Guild> {
     if (!id) throw new SyntaxError('[GUILDS] No id provided');
-    const res: any = await RestManager.prototype.REQUEST(`${DISCORD_API}guilds/${id}`, {
+    const res: any = await RestManager.prototype.request(`${DISCORD_API}guilds/${id}`, {
       method: 'GET',
       token: this._token,
     });

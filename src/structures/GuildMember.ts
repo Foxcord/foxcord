@@ -63,9 +63,10 @@ export class GuildMember {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: object | any): Promise<void> {
+  private _patchData(data: any): void {
     if (data.user !== undefined) {
       this.username = data.user.username;
       this.discriminator = data.user.discriminator;

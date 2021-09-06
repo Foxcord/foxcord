@@ -118,7 +118,7 @@ export class SelectMenuInteraction {
         },
       ];
     }
-    return await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
+    return await RestManager.prototype.request(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 7, data: payload }),
     });
@@ -171,7 +171,7 @@ export class SelectMenuInteraction {
         },
       ];
     }
-    await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
+    await RestManager.prototype.request(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 4, data: payload }),
     });
@@ -186,7 +186,7 @@ export class SelectMenuInteraction {
    */
   public async defer(ephemeral?: boolean): Promise<void> {
     if (this.deferred === true || this.replied === true) throw new Error('[SELECT-MENU-INTERACTION] Already responded');
-    await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
+    await RestManager.prototype.request(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 6, data: { flags: ephemeral ? 64 : null } }),
     });
@@ -201,7 +201,7 @@ export class SelectMenuInteraction {
    */
   public async think(ephemeral?: boolean): Promise<void> {
     if (this.deferred === true || this.replied === true) throw new Error('[SELECT-MENU-INTERACTION] Already responded');
-    await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
+    await RestManager.prototype.request(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 5, data: { flags: ephemeral ? 64 : null } }),
     });
@@ -212,9 +212,10 @@ export class SelectMenuInteraction {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: any): Promise<void> {
+  private _patchData(data: any): void {
     this.deferred = false;
     this.replied = false;
     this.guildID = data.guild_id;

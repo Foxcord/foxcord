@@ -545,3 +545,33 @@ export interface WidgetStyleOptions {
    */
   style: WidgetStyle;
 }
+
+// WEBHOOK
+export interface WebhookOptions {
+  /**
+   * The webhook URL
+   */
+  url: string;
+
+  /**
+   * The webhook username *(username cannot be 'Clyde')*
+   */
+  username: string;
+
+  /**
+   * The webhook avatar URL *(no image file)*
+   */
+  avatarURL?: string;
+}
+
+export interface CreateWebhookOptions {
+  /**
+   * The webhook username *(username cannot be 'Clyde')*
+   */
+  username: string;
+
+  /**
+   * The webhook avatar URL *(no image file)*
+   */
+  avatarURL?: string;
+}

@@ -112,7 +112,7 @@ export class SlashCommandInteraction {
         },
       ];
     }
-    await RestManager.prototype.REQUEST(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
+    await RestManager.prototype.request(`${DISCORD_API}interactions/${this.id}/${this.token}/callback`, {
       token: this._token,
       data: JSON.stringify({ type: 4, data: payload }),
     });
@@ -122,9 +122,10 @@ export class SlashCommandInteraction {
   /**
    * @ignore
    * @private
-   * @returns {Promise<void>}
+   * @param {any} data
+   * @returns {void}
    */
-  private async _patchData(data: object | any): Promise<void> {
+  private _patchData(data: any): void {
     this.id = data.id;
     this.guildID = data.guild_id;
     this.name = data.data.name;
