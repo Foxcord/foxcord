@@ -3,6 +3,10 @@ import fs from 'fs';
 import FormData from 'form-data';
 import { RestOptions } from '../utils/Interfaces';
 
+/**
+ * Class symbolizing a `RestManager`
+ * @class
+ */
 export class RestManager {
   /**
    * Request

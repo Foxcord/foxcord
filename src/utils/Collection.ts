@@ -108,4 +108,22 @@ export class Collection<TKey, TObject> extends Map<TKey, TObject> {
     if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
     return new Map([...this.entries()].sort((a: any, b: any) => a[1] - b[1]));
   }
+
+  /**
+   * Get all the keys in an array
+   * @returns {[TKey] | TKey[]}
+   */
+  public keyArray(): [TKey] | TKey[] {
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
+    return [...this.keys()];
+  }
+
+  /**
+   * Get all the values in an array
+   * @returns {TObject] | TObject[]}
+   */
+  public valueArray(): [TObject] | TObject[] {
+    if (this.isEmpty()) throw new Error('[COLLECTION] The collection is empty');
+    return [...this.values()];
+  }
 }

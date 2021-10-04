@@ -22,68 +22,68 @@ export declare interface Client extends EventEmitter {
    * @param {Message} listener
    * @event Client#MESSAGE
    */
-  on(event: 'MESSAGE', listener: (message: Message) => void | Promise<void>): this;
+  on(event: 'MESSAGE', listener: (message: Message) => void | Promise<void> | any): this;
 
   /**
    * Emitted when a slash command is used
    * @param {SlashCommandInteraction} listener
    * @event Client#SLASH_COMMAND_USED
    */
-  on(event: 'SLASH_COMMAND_USED', listener: (interaction: SlashCommandInteraction) => void | Promise<void>): this;
+  on(event: 'SLASH_COMMAND_USED', listener: (interaction: SlashCommandInteraction) => void | Promise<void> | any): this;
 
   /**
    * Emitted when a button is clicked
    * @param {ButtonInteraction} listener
    * @event Client#BUTTON_CLICKED
    */
-  on(event: 'BUTTON_CLICKED', listener: (button: ButtonInteraction) => void | Promise<void>): this;
+  on(event: 'BUTTON_CLICKED', listener: (button: ButtonInteraction) => void | Promise<void> | any): this;
 
   /**
    * Emitted when the client is ready
    * @event Client#READY
    */
-  on(event: 'READY', listener: () => void): this;
+  on(event: 'READY', listener: () => void | any): this;
 
   /**
    * Emitted when an error occures
    * @param {Error} listener
    * @event Client#ERROR
    */
-  on(event: 'ERROR', listener: (error: Error) => void): this;
+  on(event: 'ERROR', listener: (error: Error) => void | any): this;
 
   /**
    * Emitted when a warn occured
    * @event Client#WARN
    */
-  on(event: 'WARN', listener: (warn: string) => void): this;
+  on(event: 'WARN', listener: (warn: string) => void | any): this;
 
   /**
    * Emitted when a member joins a guild
    * @param {GuildMember} listener
    * @event Client#GUILD_MEMBER_ADD
    */
-  on(event: 'GUILD_MEMBER_ADD', listener: (member: GuildMember) => void | Promise<void>): this;
+  on(event: 'GUILD_MEMBER_ADD', listener: (member: GuildMember) => void | Promise<void> | any): this;
 
   /**
    * Emitted when a select menu is clicked
    * @param {SelectMenuInteraction} listener
    * @event Client#SELECT_MENU_CLICKED
    */
-  on(event: 'SELECT_MENU_CLICKED', listener: (selectMenu: SelectMenuInteraction) => void | Promise<void>): this;
+  on(event: 'SELECT_MENU_CLICKED', listener: (selectMenu: SelectMenuInteraction) => void | Promise<void> | any): this;
 
   /**
    * Emitted when the client is trying to reconnect itself
    * @param {string} listener
    * @event Client#RECONNECTING
    */
-  on(event: 'RECONNECTING', listener: (statusCode: string) => void): this;
+  on(event: 'RECONNECTING', listener: (statusCode: string) => void | any): this;
 
   /**
    * Emitted when a reaction is added to a message
    * @param {MessageReaction} listener
    * @event Client#MESSAGE_REACTION_ADD
    */
-  on(event: 'MESSAGE_REACTION_ADD', listener: (reaction: MessageReaction) => void | Promise<void>): this;
+  on(event: 'MESSAGE_REACTION_ADD', listener: (reaction: MessageReaction) => void | Promise<void> | any): this;
 }
 
 /**
@@ -204,8 +204,7 @@ export class Client extends EventEmitter {
     if (!status || typeof status !== 'string') throw SyntaxError('[CLIENT] No status provided');
     if (!statusType.includes(status.toUpperCase())) throw new SyntaxError('[CLIENT] Invalid status provided');
     this.status = status.toLowerCase();
-    if (this.WS.online === true)
-      await this.WS.sendToWS(GATEWAY_OPCODES.PRESENCE_UPDATE, await this.WS.getMetaData(3, this));
+    if (this.WS.online === true) this.WS.sendToWS(GATEWAY_OPCODES.PRESENCE_UPDATE, await this.WS.getMetaData(3, this));
   }
 
   /**
@@ -219,7 +218,7 @@ export class Client extends EventEmitter {
     if ((this.WS.AFK === true && state === true) || (this.WS.AFK === false && state === false))
       throw new Error('[CLIENT] This status is already in use');
     this.WS.AFK = state && typeof state === 'boolean' ? state : this.WS.AFK === true ? false : true;
-    await this.WS.sendToWS(GATEWAY_OPCODES.PRESENCE_UPDATE, await this.WS.getMetaData(3, this));
+    this.WS.sendToWS(GATEWAY_OPCODES.PRESENCE_UPDATE, await this.WS.getMetaData(3, this));
   }
 
   /**

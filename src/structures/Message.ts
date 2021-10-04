@@ -56,7 +56,7 @@ export class Message {
   /**
    * Message mentions **(users/bots only)**
    */
-  public mentions!: MessageMentions[] | [];
+  public mentions!: MessageMentions[] | undefined;
 
   /**
    * Message mentions **(roles only)**
@@ -234,7 +234,7 @@ export class Message {
     this.formatedTimestamp = Number(moment(data.timestamp).format('LLLL'));
     this.tts = data.tts;
     this.pinned = data.pinned;
-    this.mentions = data.mentions;
+    this.mentions = Object.keys(data.mentions).length === 0 ? undefined : data.mentions;
     this.mentionsRoles = data.mentions_roles;
     this.components = data.components;
     this.embeds = data.embeds;
